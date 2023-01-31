@@ -1,46 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 
 void main() {
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+  ));
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Kalkulator KPR',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      debugShowCheckedModeBanner: false,
+      home: const MyHomePage(title: 'Kalkulator KPR'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
 
   @override
@@ -48,68 +33,279 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+      // appBar: AppBar(
+      //   title: Text(widget.title),
+      // ),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: SizedBox(
+              height: size.height,
+              child: Column(
+                children: [
+                  AppBar(
+                    title: const Text('Flat'),
+                    centerTitle: true,
+                    elevation: 0,
+                    leading: IconButton(
+                      onPressed: () {},
+                      icon: SizedBox(
+                        width: 25,
+                        height: 25,
+                        child: Image.network(
+                            'https://cdn-icons-png.flaticon.com/512/9091/9091429.png'),
+                      ),
+                    ),
+                    actions: [
+                      IconButton(
+                        onPressed: () {},
+                        icon: SizedBox(
+                          width: 25,
+                          height: 25,
+                          child: Image.network(
+                              'https://cdn-icons-png.flaticon.com/512/984/984199.png'),
+                        ),
+                      )
+                    ],
+                    foregroundColor: Colors.black,
+                    backgroundColor: Colors.transparent,
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: CircularPercentIndicator(
+                        radius: 120.0,
+                        lineWidth: 13.0,
+                        animation: true,
+                        percent: 0.7,
+                        center: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Text(
+                              "Total Angsuran",
+                              style: TextStyle(fontSize: 15.0),
+                            ),
+                            Text(
+                              "Rp 10.000.000",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 25.0),
+                            ),
+                            Text(
+                              "Per Bulan",
+                              style: TextStyle(fontSize: 15.0),
+                            ),
+                          ],
+                        ),
+                        footer: Container(
+                          margin: const EdgeInsets.only(top: 30),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 15,
+                                height: 15,
+                                margin: const EdgeInsets.only(right: 5),
+                                decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.purple),
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: const [
+                                  Text(
+                                    "Angsuran Pokok",
+                                    style: TextStyle(),
+                                  ),
+                                  Text(
+                                    "Rp 8.000.000",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                width: 15,
+                              ),
+                              Container(
+                                width: 15,
+                                height: 15,
+                                margin: const EdgeInsets.only(right: 5),
+                                decoration: const BoxDecoration(
+                                    shape: BoxShape.circle, color: Colors.grey),
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: const [
+                                  Text(
+                                    "Bunga",
+                                    style: TextStyle(),
+                                  ),
+                                  Text(
+                                    "Rp 1.000.000",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        circularStrokeCap: CircularStrokeCap.round,
+                        progressColor: Colors.purple,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    // height: size.height * 0.4,
+                    width: size.width,
+                    margin: EdgeInsets.only(top: 10),
+                    padding: EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.3),
+                            spreadRadius: 2,
+                            blurRadius: 3,
+                            offset: const Offset(
+                                0, 1), // changes position of shadow
+                          ),
+                        ],
+                        color: Colors.white,
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(15))),
+                    child: Column(
+                      children: [
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(bottom: 10),
+                          child: TextField(
+                            decoration: InputDecoration(
+                              // filled: true,
+                              // fillColor: Colors.blue.shade100,
+                              label: Text('Jumlah Pinjaman (Rp)'),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.grey.shade400),
+                              ),
+                              border: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade400)),
+                              suffixIcon: SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: Image.network(
+                                    "https://cdn-icons-png.flaticon.com/512/8222/8222244.png"),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(bottom: 10),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                    // filled: true,
+                                    // fillColor: Colors.blue.shade100,
+                                    label: Text('Jangka Waktu (Tahun)'),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.grey.shade400),
+                                    ),
+                                    border: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.grey.shade400)),
+                                    suffixIcon: Icon(Icons.date_range,
+                                        color: Colors.black54),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                    // filled: true,
+                                    // fillColor: Colors.blue.shade100,
+                                    label: Text('Bunga Pinjaman'),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.grey.shade400),
+                                    ),
+                                    border: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.grey.shade400)),
+                                    suffixIcon: Icon(
+                                      Icons.percent,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          width: size.width,
+                          margin: const EdgeInsets.only(top: 5),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.grey.shade300,
+                                      foregroundColor: Colors.black87,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                      ),
+                                    ),
+                                    onPressed: () {},
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(15.0),
+                                      child: Text('Hitung Ulang'),
+                                    )),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.purple,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                      ),
+                                    ),
+                                    onPressed: () {},
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(15.0),
+                                      child: Text('Tabel Angsuran'),
+                                    )),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
+          )
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
