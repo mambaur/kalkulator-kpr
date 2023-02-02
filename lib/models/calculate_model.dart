@@ -1,14 +1,17 @@
 class CalculateModel {
-  double? loan, year, interest;
+  double? loanPlafon, loan, year, interest;
 
-  CalculateModel({this.loan, this.year, this.interest});
+  CalculateModel({this.loan, this.loanPlafon, this.year, this.interest});
 }
 
 class CalculateResultModel {
-  double? installmentResult, interestResult, principal;
+  double? installmentResult, interestResult, principal, principalTotalRemain;
 
   CalculateResultModel(
-      {this.installmentResult, this.interestResult, this.principal});
+      {this.installmentResult,
+      this.interestResult,
+      this.principal,
+      this.principalTotalRemain});
 
   Map<String, dynamic> toJson() {
     return {
@@ -18,3 +21,5 @@ class CalculateResultModel {
     };
   }
 }
+
+enum CalculatorType { flat, effective, anuitas }

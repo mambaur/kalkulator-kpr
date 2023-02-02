@@ -32,6 +32,10 @@ dependencies:
   flutter:
     sdk: flutter
   percent_indicator: ^4.2.2
+  loading_animation_widget: ^1.2.0+3
+  overlay_loading_progress: ^1.0.1
+  pattern_formatter: ^2.0.0
+  intl: ^0.17.0
 
 
   # The following adds the Cupertino Icons font to your application.

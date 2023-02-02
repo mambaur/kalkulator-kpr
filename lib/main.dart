@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:kalkulator_kpr/core/currency_format.dart';
 import 'package:kalkulator_kpr/core/helpers.dart';
+import 'package:kalkulator_kpr/core/loading_overlay.dart';
 import 'package:kalkulator_kpr/models/calculate_model.dart';
+import 'package:pattern_formatter/numeric_formatter.dart';
+import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 void main() {
@@ -37,9 +41,46 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
-  final _loadController = TextEditingController();
+  final _loanController = TextEditingController();
   final _yearController = TextEditingController();
   final _interestController = TextEditingController();
+
+  CalculateResultModel? result;
+
+  CalculatorType type = CalculatorType.anuitas;
+
+  double? percentIndicator = 0;
+
+  Future calculate() async {
+    if (_formKey.currentState!.validate()) {
+      percentIndicator = 0;
+      setState(() {});
+      // result = null;
+      // setState(() {});
+      LoadingOverlay.show(context);
+      await Future.delayed(const Duration(seconds: 1));
+      CalculateModel calculateModel = CalculateModel(
+        loan: double.parse(CurrencyFormat.toNumber(_loanController.text)),
+        year: double.parse(CurrencyFormat.toNumber(_yearController.text)),
+        interest: double.parse(
+            CurrencyFormat.toNumberComma(_interestController.text)),
+      );
+      if (type == CalculatorType.flat) {
+        result = calculateFlat(calculateModel);
+      } else if (type == CalculatorType.effective) {
+        result = calculateEffective(calculateModel);
+      } else {
+        result = calculateAnuitas(calculateModel);
+      }
+      if (result != null) {
+        percentIndicator = result!.principal! / result!.installmentResult!;
+      }
+      LoadingOverlay.hide();
+      // print(result?.toJson());
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -64,28 +105,51 @@ class _MyHomePageState extends State<MyHomePage> {
               //   child: Text('Drawer Header'),
               // ),
               ListTile(
+                selected: type == CalculatorType.flat,
+                selectedColor: Colors.purple,
                 title: const Text('Bunga Flat'),
                 onTap: () {
+                  type = CalculatorType.flat;
                   _scaffoldKey.currentState?.openEndDrawer();
-                  CalculateResultModel calculate = calculateFlat(
-                      CalculateModel(loan: 400000000, year: 3, interest: 10));
-                  print(calculate.toJson());
-                  // Update the state of the app.
-                  // ...
+                  if (!(_loanController.text == '' ||
+                      _yearController.text == '' ||
+                      _interestController.text == '')) {
+                    calculate();
+                  } else {
+                    setState(() {});
+                  }
                 },
               ),
               ListTile(
+                selected: type == CalculatorType.effective,
+                selectedColor: Colors.purple,
                 title: const Text('Bunga Efektif'),
                 onTap: () {
-                  // Update the state of the app.
-                  // ...
+                  type = CalculatorType.effective;
+                  _scaffoldKey.currentState?.openEndDrawer();
+                  if (!(_loanController.text == '' ||
+                      _yearController.text == '' ||
+                      _interestController.text == '')) {
+                    calculate();
+                  } else {
+                    setState(() {});
+                  }
                 },
               ),
               ListTile(
+                selected: type == CalculatorType.anuitas,
+                selectedColor: Colors.purple,
                 title: const Text('Bunga Anuitas'),
                 onTap: () {
-                  // Update the state of the app.
-                  // ...
+                  type = CalculatorType.anuitas;
+                  _scaffoldKey.currentState?.openEndDrawer();
+                  if (!(_loanController.text == '' ||
+                      _yearController.text == '' ||
+                      _interestController.text == '')) {
+                    calculate();
+                  } else {
+                    setState(() {});
+                  }
                 },
               ),
             ],
@@ -100,7 +164,11 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Column(
                 children: [
                   AppBar(
-                    title: const Text('Flat'),
+                    title: Text(type == CalculatorType.flat
+                        ? 'Flat'
+                        : type == CalculatorType.effective
+                            ? 'Efektif'
+                            : 'Anuitas'),
                     centerTitle: true,
                     elevation: 0,
                     leading: IconButton(
@@ -133,24 +201,33 @@ class _MyHomePageState extends State<MyHomePage> {
                         radius: 120.0,
                         lineWidth: 13.0,
                         animation: true,
-                        percent: 0.7,
+                        percent: percentIndicator ?? 0,
                         center: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Text(
+                          children: [
+                            const Text(
                               "Total Angsuran",
                               style: TextStyle(fontSize: 15.0),
                             ),
-                            Text(
-                              "Rp 10.000.000",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 25.0),
+                            const SizedBox(
+                              height: 5,
                             ),
                             Text(
-                              "Per Bulan",
-                              style: TextStyle(fontSize: 15.0),
+                              "Rp ${currencyId.format(result?.installmentResult ?? 0)}",
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 25.0),
+                            ),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              type == CalculatorType.flat ||
+                                      type == CalculatorType.anuitas
+                                  ? "Per Bulan"
+                                  : "Bulan Pertama",
+                              style: const TextStyle(fontSize: 15.0),
                             ),
                           ],
                         ),
@@ -170,15 +247,15 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const [
-                                  Text(
+                                children: [
+                                  const Text(
                                     "Angsuran Pokok",
                                     style: TextStyle(),
                                   ),
                                   Text(
-                                    "Rp 8.000.000",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                    "Rp ${currencyId.format(result?.principal ?? 0)}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
@@ -194,15 +271,15 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const [
-                                  Text(
+                                children: [
+                                  const Text(
                                     "Bunga",
                                     style: TextStyle(),
                                   ),
                                   Text(
-                                    "Rp 1.000.000",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                    "Rp ${currencyId.format(result?.interestResult ?? 0)}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
@@ -242,12 +319,19 @@ class _MyHomePageState extends State<MyHomePage> {
                           Container(
                             margin: const EdgeInsets.only(bottom: 10),
                             child: TextFormField(
-                              controller: _loadController,
+                              controller: _loanController,
                               validator: (value) {
                                 if (value == '') {
                                   return "Jumlah pinjaman tidak boleh kosong";
                                 }
                               },
+                              inputFormatters: [
+                                ThousandsFormatter(
+                                    allowFraction: false,
+                                    formatter:
+                                        NumberFormat.decimalPattern('en'))
+                              ],
+                              keyboardType: TextInputType.number,
                               decoration: InputDecoration(
                                 // filled: true,
                                 // fillColor: Colors.blue.shade100,
@@ -280,6 +364,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                         return "Jangka waktu tidak boleh kosong";
                                       }
                                     },
+                                    inputFormatters: [
+                                      ThousandsFormatter(
+                                          allowFraction: false,
+                                          formatter:
+                                              NumberFormat.decimalPattern('en'))
+                                    ],
+                                    keyboardType: TextInputType.number,
                                     decoration: InputDecoration(
                                       // filled: true,
                                       // fillColor: Colors.blue.shade100,
@@ -307,6 +398,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                         return "Bunga pinjaman tidak boleh kosong";
                                       }
                                     },
+                                    inputFormatters: [
+                                      ThousandsFormatter(
+                                          allowFraction: true,
+                                          formatter:
+                                              NumberFormat.decimalPattern('en'))
+                                    ],
+                                    keyboardType: TextInputType.number,
                                     decoration: InputDecoration(
                                       // filled: true,
                                       // fillColor: Colors.blue.shade100,
@@ -333,43 +431,90 @@ class _MyHomePageState extends State<MyHomePage> {
                             margin: const EdgeInsets.only(top: 5),
                             child: Row(
                               children: [
-                                Expanded(
-                                  child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.grey.shade300,
-                                        foregroundColor: Colors.black87,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30.0),
-                                        ),
+                                result != null
+                                    ? Expanded(
+                                        child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  Colors.grey.shade300,
+                                              foregroundColor: Colors.black87,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(30.0),
+                                              ),
+                                            ),
+                                            onPressed: () => calculate(),
+                                            child: const Padding(
+                                              padding: EdgeInsets.all(15.0),
+                                              child: Text('Hitung Ulang'),
+                                            )),
+                                      )
+                                    : Expanded(
+                                        child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.purple,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(30.0),
+                                              ),
+                                            ),
+                                            onPressed: () => calculate(),
+                                            child: const Padding(
+                                              padding: EdgeInsets.all(15.0),
+                                              child: Text('Hitung Simulasi'),
+                                            )),
                                       ),
-                                      onPressed: () {
-                                        if (_formKey.currentState!
-                                            .validate()) {}
-                                      },
-                                      child: const Padding(
-                                        padding: EdgeInsets.all(15.0),
-                                        child: Text('Hitung Ulang'),
-                                      )),
+                                SizedBox(
+                                  width: result != null ? 10 : 0,
                                 ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Expanded(
-                                  child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.purple,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30.0),
-                                        ),
-                                      ),
-                                      onPressed: () {},
-                                      child: const Padding(
-                                        padding: EdgeInsets.all(15.0),
-                                        child: Text('Tabel Angsuran'),
-                                      )),
-                                ),
+                                result != null
+                                    ? Expanded(
+                                        child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.purple,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(30.0),
+                                              ),
+                                            ),
+                                            onPressed: () {
+                                              CalculateModel calculateModel =
+                                                  CalculateModel(
+                                                loanPlafon: double.parse(
+                                                    CurrencyFormat.toNumber(
+                                                        _loanController.text)),
+                                                loan: double.parse(
+                                                    CurrencyFormat.toNumber(
+                                                        _loanController.text)),
+                                                year: double.parse(
+                                                    CurrencyFormat.toNumber(
+                                                        _yearController.text)),
+                                                interest: double.parse(
+                                                    CurrencyFormat
+                                                        .toNumberComma(
+                                                            _interestController
+                                                                .text)),
+                                              );
+
+                                              List<CalculateResultModel>
+                                                  tables =
+                                                  type == CalculatorType.flat
+                                                      ? installmentTableFlat(
+                                                          calculateModel)
+                                                      : type ==
+                                                              CalculatorType
+                                                                  .effective
+                                                          ? installmentTableEffective(
+                                                              calculateModel)
+                                                          : installmentTableAnuitas(
+                                                              calculateModel);
+                                            },
+                                            child: const Padding(
+                                              padding: EdgeInsets.all(15.0),
+                                              child: Text('Tabel Angsuran'),
+                                            )),
+                                      )
+                                    : const SizedBox(),
                               ],
                             ),
                           )
