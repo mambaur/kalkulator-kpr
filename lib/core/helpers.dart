@@ -59,7 +59,7 @@ List<CalculateResultModel> installmentTableFlat(CalculateModel calculateModel) {
     CalculateResultModel result = calculateFlat(calculateModel);
     loan = loan - result.principal!;
     result.principalTotalRemain = loan;
-    print(result.principalTotalRemain);
+    // print(result.principalTotalRemain);
     data.add(result);
 
     // calculateModel.loan = result.principalTotalRemain;
@@ -77,7 +77,7 @@ List<CalculateResultModel> installmentTableEffective(
     CalculateResultModel result = calculateEffective(calculateModel);
     loan = loan - result.principal!;
     result.principalTotalRemain = loan;
-    print(result.principalTotalRemain);
+    // print(result.principalTotalRemain);
     data.add(result);
 
     calculateModel.loan = result.principalTotalRemain;
@@ -96,7 +96,7 @@ List<CalculateResultModel> installmentTableAnuitas(
     CalculateResultModel result = calculateAnuitas(calculateModel);
     loan = loan - result.principal!;
     result.principalTotalRemain = loan;
-    print(result.interestResult);
+    // print(result.interestResult);
     data.add(result);
 
     calculateModel.loan = result.principalTotalRemain;

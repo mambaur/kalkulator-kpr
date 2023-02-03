@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:kalkulator_kpr/about/anuitas_description.dart';
+import 'package:kalkulator_kpr/about/disclaimer.dart';
+import 'package:kalkulator_kpr/about/effective_description.dart';
+import 'package:kalkulator_kpr/about/flat_description.dart';
 import 'package:kalkulator_kpr/core/currency_format.dart';
 import 'package:kalkulator_kpr/core/helpers.dart';
 import 'package:kalkulator_kpr/core/loading_overlay.dart';
 import 'package:kalkulator_kpr/models/calculate_model.dart';
+import 'package:kalkulator_kpr/principal_table.dart';
 import 'package:pattern_formatter/numeric_formatter.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -94,9 +99,9 @@ class _MyHomePageState extends State<MyHomePage> {
         // through the options in the drawer if there isn't enough vertical
         // space to fit everything.
         child: SafeArea(
-          child: ListView(
+          child: Column(
             // Important: Remove any padding from the ListView.
-            padding: EdgeInsets.zero,
+            // padding: EdgeInsets.zero,
             children: [
               // const DrawerHeader(
               //   decoration: BoxDecoration(
@@ -104,6 +109,30 @@ class _MyHomePageState extends State<MyHomePage> {
               //   ),
               //   child: Text('Drawer Header'),
               // ),
+              ListTile(
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      'Kalkulator KPR',
+                      style: TextStyle(
+                          color: Colors.purple,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      'Simulasi Kredit',
+                      style: TextStyle(),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(
+                thickness: 0.5,
+              ),
               ListTile(
                 selected: type == CalculatorType.flat,
                 selectedColor: Colors.purple,
@@ -152,6 +181,43 @@ class _MyHomePageState extends State<MyHomePage> {
                   }
                 },
               ),
+              const Spacer(),
+              ListTile(
+                title: const Text('Disclaimer'),
+                leading: const Icon(
+                  Icons.report_outlined,
+                ),
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (builder) {
+                    return const Disclaimer();
+                  }));
+                },
+              ),
+              ListTile(
+                title: const Text('Reset'),
+                leading: const Icon(
+                  Icons.refresh,
+                ),
+                onTap: () {
+                  _scaffoldKey.currentState?.openEndDrawer();
+                  setState(() {
+                    result = null;
+                    _interestController.text = '';
+                    _yearController.text = '';
+                    _loanController.text = '';
+                  });
+                },
+              ),
+              ListTile(
+                title: const Text('Setting'),
+                leading: const Icon(
+                  Icons.settings_outlined,
+                ),
+                onTap: () {},
+              ),
+              const SizedBox(
+                height: 15,
+              )
             ],
           ),
         ),
@@ -176,19 +242,27 @@ class _MyHomePageState extends State<MyHomePage> {
                       icon: SizedBox(
                         width: 25,
                         height: 25,
-                        child: Image.network(
-                            'https://cdn-icons-png.flaticon.com/512/9091/9091429.png'),
+                        child: Image.asset('assets/menu.png'),
                       ),
                     ),
                     actions: [
                       IconButton(
-                        onPressed: () =>
-                            _scaffoldKey.currentState?.openDrawer(),
+                        onPressed: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (builder) {
+                            if (type == CalculatorType.flat) {
+                              return const FlatDescription();
+                            } else if (type == CalculatorType.effective) {
+                              return const EffectiveDescription();
+                            } else {
+                              return const AnuitasDescription();
+                            }
+                          }));
+                        },
                         icon: SizedBox(
                           width: 25,
                           height: 25,
-                          child: Image.network(
-                              'https://cdn-icons-png.flaticon.com/512/984/984199.png'),
+                          child: Image.asset('assets/question.png'),
                         ),
                       )
                     ],
@@ -346,8 +420,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 suffixIcon: SizedBox(
                                   width: 20,
                                   height: 20,
-                                  child: Image.network(
-                                      "https://cdn-icons-png.flaticon.com/512/8222/8222244.png"),
+                                  child: Image.asset('assets/money.png'),
                                 ),
                               ),
                             ),
@@ -477,37 +550,80 @@ class _MyHomePageState extends State<MyHomePage> {
                                                     BorderRadius.circular(30.0),
                                               ),
                                             ),
-                                            onPressed: () {
-                                              CalculateModel calculateModel =
-                                                  CalculateModel(
-                                                loanPlafon: double.parse(
-                                                    CurrencyFormat.toNumber(
-                                                        _loanController.text)),
-                                                loan: double.parse(
-                                                    CurrencyFormat.toNumber(
-                                                        _loanController.text)),
-                                                year: double.parse(
-                                                    CurrencyFormat.toNumber(
-                                                        _yearController.text)),
-                                                interest: double.parse(
-                                                    CurrencyFormat
-                                                        .toNumberComma(
-                                                            _interestController
-                                                                .text)),
-                                              );
+                                            onPressed: () async {
+                                              if (_formKey.currentState!
+                                                  .validate()) {
+                                                LoadingOverlay.show(context);
+                                                CalculateModel calculateModel =
+                                                    CalculateModel(
+                                                  loanPlafon: double.parse(
+                                                      CurrencyFormat.toNumber(
+                                                          _loanController
+                                                              .text)),
+                                                  loan: double.parse(
+                                                      CurrencyFormat.toNumber(
+                                                          _loanController
+                                                              .text)),
+                                                  year: double.parse(
+                                                      CurrencyFormat.toNumber(
+                                                          _yearController
+                                                              .text)),
+                                                  interest: double.parse(
+                                                      CurrencyFormat
+                                                          .toNumberComma(
+                                                              _interestController
+                                                                  .text)),
+                                                );
 
-                                              List<CalculateResultModel>
-                                                  tables =
-                                                  type == CalculatorType.flat
-                                                      ? installmentTableFlat(
-                                                          calculateModel)
-                                                      : type ==
-                                                              CalculatorType
-                                                                  .effective
-                                                          ? installmentTableEffective(
-                                                              calculateModel)
-                                                          : installmentTableAnuitas(
-                                                              calculateModel);
+                                                List<CalculateResultModel>
+                                                    tables =
+                                                    type == CalculatorType.flat
+                                                        ? installmentTableFlat(
+                                                            calculateModel)
+                                                        : type ==
+                                                                CalculatorType
+                                                                    .effective
+                                                            ? installmentTableEffective(
+                                                                calculateModel)
+                                                            : installmentTableAnuitas(
+                                                                calculateModel);
+                                                await Future.delayed(
+                                                    const Duration(seconds: 1));
+                                                LoadingOverlay.hide();
+
+                                                // ignore: use_build_context_synchronously
+                                                Navigator.push(context,
+                                                    MaterialPageRoute(
+                                                        builder: (builder) {
+                                                  return PrincipalTable(
+                                                    results: tables,
+                                                    type: type,
+                                                    calculateModel:
+                                                        CalculateModel(
+                                                      loanPlafon: double.parse(
+                                                          CurrencyFormat
+                                                              .toNumber(
+                                                                  _loanController
+                                                                      .text)),
+                                                      loan: double.parse(
+                                                          CurrencyFormat
+                                                              .toNumber(
+                                                                  _loanController
+                                                                      .text)),
+                                                      year: double.parse(
+                                                          CurrencyFormat
+                                                              .toNumber(
+                                                                  _yearController
+                                                                      .text)),
+                                                      interest: double.parse(
+                                                          CurrencyFormat
+                                                              .toNumberComma(
+                                                                  _interestController
+                                                                      .text)),
+                                                    ),
+                                                  );
+                                                }));
+                                              }
                                             },
                                             child: const Padding(
                                               padding: EdgeInsets.all(15.0),
