@@ -12,6 +12,8 @@ import 'package:kalkulator_kpr/principal_table.dart';
 import 'package:pattern_formatter/numeric_formatter.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:upgrader/upgrader.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -30,7 +32,14 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home: const MyHomePage(title: 'Kalkulator KPR'),
+      home: UpgradeAlert(
+          upgrader: Upgrader(
+              durationUntilAlertAgain: const Duration(hours: 3),
+              showIgnore: false,
+              showLater: false,
+              canDismissDialog: false,
+              showReleaseNotes: false),
+          child: const MyHomePage(title: 'Kalkulator KPR')),
     );
   }
 }
@@ -86,29 +95,22 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  Future<void> _launchUrl(String url) async {
+    if (!await launchUrl(Uri.parse(url),
+        mode: LaunchMode.externalApplication)) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       key: _scaffoldKey,
-      // appBar: AppBar(
-      //   title: Text(widget.title),
-      // ),
       drawer: Drawer(
-        // Add a ListView to the drawer. This ensures the user can scroll
-        // through the options in the drawer if there isn't enough vertical
-        // space to fit everything.
         child: SafeArea(
           child: Column(
-            // Important: Remove any padding from the ListView.
-            // padding: EdgeInsets.zero,
             children: [
-              // const DrawerHeader(
-              //   decoration: BoxDecoration(
-              //     color: Colors.blue,
-              //   ),
-              //   child: Text('Drawer Header'),
-              // ),
               ListTile(
                 title: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -134,11 +136,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 thickness: 0.5,
               ),
               ListTile(
-                selected: type == CalculatorType.flat,
+                selected: type == CalculatorType.anuitas,
                 selectedColor: Colors.purple,
-                title: const Text('Bunga Flat'),
+                title: const Text('Bunga Anuitas'),
                 onTap: () {
-                  type = CalculatorType.flat;
+                  type = CalculatorType.anuitas;
                   _scaffoldKey.currentState?.openEndDrawer();
                   if (!(_loanController.text == '' ||
                       _yearController.text == '' ||
@@ -166,11 +168,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
               ),
               ListTile(
-                selected: type == CalculatorType.anuitas,
+                selected: type == CalculatorType.flat,
                 selectedColor: Colors.purple,
-                title: const Text('Bunga Anuitas'),
+                title: const Text('Bunga Flat'),
                 onTap: () {
-                  type = CalculatorType.anuitas;
+                  type = CalculatorType.flat;
                   _scaffoldKey.currentState?.openEndDrawer();
                   if (!(_loanController.text == '' ||
                       _yearController.text == '' ||
@@ -182,17 +184,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
               ),
               const Spacer(),
-              ListTile(
-                title: const Text('Disclaimer'),
-                leading: const Icon(
-                  Icons.report_outlined,
-                ),
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (builder) {
-                    return const Disclaimer();
-                  }));
-                },
-              ),
               ListTile(
                 title: const Text('Reset'),
                 leading: const Icon(
@@ -209,9 +200,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
               ),
               ListTile(
-                title: const Text('Setting'),
+                title: const Text('Privacy Policy'),
                 leading: const Icon(
-                  Icons.settings_outlined,
+                  Icons.gpp_maybe_outlined,
+                ),
+                onTap: () => _launchUrl(
+                    "https://caraguna.com/privacy-policy-kalkulator-kpr-simulasi-kredit/"),
+              ),
+              ListTile(
+                title: const Text('Versi 1.0.0'),
+                leading: const Icon(
+                  Icons.info_outline,
                 ),
                 onTap: () {},
               ),
@@ -455,7 +454,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       border: OutlineInputBorder(
                                           borderSide: BorderSide(
                                               color: Colors.grey.shade400)),
-                                      suffixIcon: const Icon(Icons.date_range,
+                                      suffixIcon: const Icon(Icons.alarm,
                                           color: Colors.black54),
                                     ),
                                   ),

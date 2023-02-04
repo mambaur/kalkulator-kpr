@@ -1,6 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kalkulator_kpr/core/currency_format.dart';
 import 'package:kalkulator_kpr/models/calculate_model.dart';
+
+enum StatusAd { initial, loaded }
 
 class PrincipalTable extends StatefulWidget {
   final List<CalculateResultModel>? results;
@@ -79,11 +83,38 @@ class _PrincipalTableState extends State<PrincipalTable> {
     return data;
   }
 
+  BannerAd? myBanner;
+
+  StatusAd statusAd = StatusAd.initial;
+
+  BannerAdListener listener() => BannerAdListener(
+        onAdLoaded: (Ad ad) {
+          setState(() {
+            statusAd = StatusAd.loaded;
+          });
+        },
+      );
+
   @override
   void initState() {
     rows = setRowValue();
     addFooter();
+    myBanner = BannerAd(
+      adUnitId: kDebugMode
+          ? 'ca-app-pub-3940256099942544/6300978111'
+          : 'ca-app-pub-2465007971338713/9945891754',
+      size: AdSize.fullBanner,
+      request: const AdRequest(),
+      listener: listener(),
+    );
+    myBanner!.load();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    myBanner!.dispose();
+    super.dispose();
   }
 
   @override
@@ -186,7 +217,34 @@ class _PrincipalTableState extends State<PrincipalTable> {
                     ),
                   ],
                 ),
-              )
+              ),
+              statusAd == StatusAd.loaded
+                  ? Container(
+                      width: size.width,
+                      margin:
+                          const EdgeInsets.only(top: 15, left: 15, right: 15),
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(5),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.1),
+                            spreadRadius: 5,
+                            blurRadius: 3,
+                            offset: const Offset(
+                                0, 1), // changes position of shadow
+                          ),
+                        ],
+                      ),
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: myBanner!.size.width.toDouble(),
+                        height: myBanner!.size.height.toDouble(),
+                        child: AdWidget(ad: myBanner!),
+                      ),
+                    )
+                  : const SizedBox(),
             ])),
             SliverList(
                 delegate: SliverChildListDelegate([
