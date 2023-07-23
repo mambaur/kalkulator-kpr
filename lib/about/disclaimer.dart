@@ -18,7 +18,7 @@ class _DisclaimerState extends State<Disclaimer> {
         foregroundColor: Colors.black,
         backgroundColor: Colors.transparent,
       ),
-      body: Center(),
+      body: const SizedBox(),
     );
   }
 }

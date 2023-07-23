@@ -223,10 +223,10 @@ class _PrincipalTableState extends State<PrincipalTable> {
                       width: size.width,
                       margin:
                           const EdgeInsets.only(top: 15, left: 15, right: 15),
-                      padding: const EdgeInsets.all(5),
+                      // padding: const EdgeInsets.all(5),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(5),
+                        // borderRadius: BorderRadius.circular(5),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.grey.withOpacity(0.1),

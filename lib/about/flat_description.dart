@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:kalkulator_kpr/about/other_app.dart';
 
 enum StatusAd { initial, loaded }
 
@@ -62,10 +63,10 @@ class _FlatDescriptionState extends State<FlatDescription> {
               ? Container(
                   width: size.width,
                   margin: const EdgeInsets.only(bottom: 15),
-                  padding: const EdgeInsets.all(5),
+                  // padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(5),
+                    // borderRadius: BorderRadius.circular(5),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.1),
@@ -99,7 +100,11 @@ class _FlatDescriptionState extends State<FlatDescription> {
             child: const Text(
                 'Adapun cara menghitung bunga pinjaman per bulan menggunakan sistem flat ialah sebagai berikut.'),
           ),
-          SizedBox(width: size.width, child: Image.asset('assets/flat.png'))
+          SizedBox(width: size.width, child: Image.asset('assets/flat.png')),
+          const SizedBox(
+            height: 15,
+          ),
+          const OtherApp()
         ]),
       ),
     );

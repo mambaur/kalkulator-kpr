@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kalkulator_kpr/about/anuitas_description.dart';
-import 'package:kalkulator_kpr/about/disclaimer.dart';
 import 'package:kalkulator_kpr/about/effective_description.dart';
 import 'package:kalkulator_kpr/about/flat_description.dart';
 import 'package:kalkulator_kpr/core/currency_format.dart';
@@ -111,10 +110,10 @@ class _MyHomePageState extends State<MyHomePage> {
         child: SafeArea(
           child: Column(
             children: [
-              ListTile(
+              const ListTile(
                 title: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
                       'Kalkulator KPR',
                       style: TextStyle(
@@ -185,6 +184,22 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               const Spacer(),
               ListTile(
+                title: const Text('Aplikasi Lainnya'),
+                leading: const Icon(
+                  Icons.play_arrow_outlined,
+                ),
+                onTap: () => _launchUrl(
+                    "https://play.google.com/store/apps/dev?id=8918426189046119136"),
+              ),
+              ListTile(
+                title: const Text('Kritik & Saran'),
+                leading: const Icon(
+                  Icons.comment_outlined,
+                ),
+                onTap: () => _launchUrl(
+                    "https://docs.google.com/forms/d/e/1FAIpQLSeHAksu3qdj64kbieifkzAbQkKKT1HWLs0EZoPkPgV7_Ljrfg/viewform?usp=sf_link"),
+              ),
+              ListTile(
                 title: const Text('Reset'),
                 leading: const Icon(
                   Icons.refresh,
@@ -208,7 +223,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     "https://caraguna.com/privacy-policy-kalkulator-kpr-simulasi-kredit/"),
               ),
               ListTile(
-                title: const Text('Versi 1.0.0'),
+                title: const Text('Versi 1.1.0'),
                 leading: const Icon(
                   Icons.info_outline,
                 ),
@@ -397,6 +412,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 if (value == '') {
                                   return "Jumlah pinjaman tidak boleh kosong";
                                 }
+                                return null;
                               },
                               inputFormatters: [
                                 ThousandsFormatter(
@@ -435,6 +451,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       if (value == '') {
                                         return "Jangka waktu tidak boleh kosong";
                                       }
+                                      return null;
                                     },
                                     inputFormatters: [
                                       ThousandsFormatter(
@@ -469,6 +486,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       if (value == '') {
                                         return "Bunga pinjaman tidak boleh kosong";
                                       }
+                                      return null;
                                     },
                                     inputFormatters: [
                                       ThousandsFormatter(

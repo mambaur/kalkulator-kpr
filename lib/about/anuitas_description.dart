@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:kalkulator_kpr/about/other_app.dart';
 
 enum StatusAd { initial, loaded }
 
@@ -62,10 +63,10 @@ class _AnuitasDescriptionState extends State<AnuitasDescription> {
               ? Container(
                   width: size.width,
                   margin: const EdgeInsets.only(bottom: 15),
-                  padding: const EdgeInsets.all(5),
+                  // padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(5),
+                    // borderRadius: BorderRadius.circular(5),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.1),
@@ -100,6 +101,7 @@ class _AnuitasDescriptionState extends State<AnuitasDescription> {
             child: const Text(
                 'Hasil simulasi pada halaman utama adalah jumlah angsuran pada bulan pertama saja termasuk bunga dan pinjaman pokok.'),
           ),
+          const OtherApp()
         ]),
       ),
     );
