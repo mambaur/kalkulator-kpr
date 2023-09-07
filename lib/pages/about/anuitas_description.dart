@@ -1,18 +1,18 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:kalkulator_kpr/about/other_app.dart';
+import 'package:kalkulator_kpr/pages/about/other_app.dart';
 
 enum StatusAd { initial, loaded }
 
-class FlatDescription extends StatefulWidget {
-  const FlatDescription({super.key});
+class AnuitasDescription extends StatefulWidget {
+  const AnuitasDescription({super.key});
 
   @override
-  State<FlatDescription> createState() => _FlatDescriptionState();
+  State<AnuitasDescription> createState() => _AnuitasDescriptionState();
 }
 
-class _FlatDescriptionState extends State<FlatDescription> {
+class _AnuitasDescriptionState extends State<AnuitasDescription> {
   BannerAd? myBanner;
 
   StatusAd statusAd = StatusAd.initial;
@@ -50,7 +50,7 @@ class _FlatDescriptionState extends State<FlatDescription> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flat'),
+        title: const Text('Anuitas'),
         centerTitle: true,
         elevation: 0,
         foregroundColor: Colors.black,
@@ -88,21 +88,18 @@ class _FlatDescriptionState extends State<FlatDescription> {
           Container(
             margin: const EdgeInsets.only(bottom: 15),
             child: const Text(
-                'Bunga flat adalah sistem perhitungan suku bunga dengan mengacu pada besaran pokok awal pinjaman. Umumnya, jenis perhitungan ini digunakan pada kredit konsumtif, seperti KTA, mobil, handphone, dan lain sebagainya.'),
+                'Bunga anuitas merupakan modifikasi dari bunga efektif dimana total cicilan per bulan jumlahnya sama. Namun, cara perhitungan bunganya akan tetap dikalkulasikan dari saldo pokok pinjaman.'),
           ),
           Container(
             margin: const EdgeInsets.only(bottom: 15),
             child: const Text(
-                'Bunga flat juga termasuk cara menghitung bunga pinjaman di bank paling mudah dibandingkan lainnya. Sebab, besaran nilai bunga dan pokok dalam cicilan bulanan akan tetap sama dan tidak berubah.'),
+                'Dalam perhitungan bunga anuitas, besaran cicilan pokok pinjaman akan meningkat, sementara besaran bunga menurun. Tujuannya ialah untuk mempermudah nasabah dalam melunasi angsuran bulanan dan tidak bingung dengan jumlah yang berubah-ubah. Berikut contohnya.'),
           ),
+          SizedBox(width: size.width, child: Image.asset('assets/anuitas.png')),
           Container(
-            margin: const EdgeInsets.only(bottom: 15),
+            margin: const EdgeInsets.only(bottom: 15, top: 15),
             child: const Text(
-                'Adapun cara menghitung bunga pinjaman per bulan menggunakan sistem flat ialah sebagai berikut.'),
-          ),
-          SizedBox(width: size.width, child: Image.asset('assets/flat.png')),
-          const SizedBox(
-            height: 15,
+                'Hasil simulasi pada halaman utama adalah jumlah angsuran pada bulan pertama saja termasuk bunga dan pinjaman pokok.'),
           ),
           const OtherApp()
         ]),

@@ -1,18 +1,18 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:kalkulator_kpr/about/other_app.dart';
+import 'package:kalkulator_kpr/pages/about/other_app.dart';
 
 enum StatusAd { initial, loaded }
 
-class AnuitasDescription extends StatefulWidget {
-  const AnuitasDescription({super.key});
+class EffectiveDescription extends StatefulWidget {
+  const EffectiveDescription({super.key});
 
   @override
-  State<AnuitasDescription> createState() => _AnuitasDescriptionState();
+  State<EffectiveDescription> createState() => _EffectiveDescriptionState();
 }
 
-class _AnuitasDescriptionState extends State<AnuitasDescription> {
+class _EffectiveDescriptionState extends State<EffectiveDescription> {
   BannerAd? myBanner;
 
   StatusAd statusAd = StatusAd.initial;
@@ -50,7 +50,7 @@ class _AnuitasDescriptionState extends State<AnuitasDescription> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Anuitas'),
+        title: const Text('Effective'),
         centerTitle: true,
         elevation: 0,
         foregroundColor: Colors.black,
@@ -88,14 +88,20 @@ class _AnuitasDescriptionState extends State<AnuitasDescription> {
           Container(
             margin: const EdgeInsets.only(bottom: 15),
             child: const Text(
-                'Bunga anuitas merupakan modifikasi dari bunga efektif dimana total cicilan per bulan jumlahnya sama. Namun, cara perhitungan bunganya akan tetap dikalkulasikan dari saldo pokok pinjaman.'),
+                'Bunga efektif merupakan kebalikan dari bunga flat. Sistem perhitungan ini membuat angsuran semakin mengecil setiap bulannya.'),
           ),
           Container(
             margin: const EdgeInsets.only(bottom: 15),
             child: const Text(
-                'Dalam perhitungan bunga anuitas, besaran cicilan pokok pinjaman akan meningkat, sementara besaran bunga menurun. Tujuannya ialah untuk mempermudah nasabah dalam melunasi angsuran bulanan dan tidak bingung dengan jumlah yang berubah-ubah. Berikut contohnya.'),
+                'Hal ini disebabkan karena bunga efektif menghitung besaran bunga berdasarkan sisa pokok utang atau jumlah yang belum dibayarkan. Sehingga, pembayaran bunga pun akan terus berkurang dari waktu ke waktu. Umumnya, bunga efektif digunakan pada jenis kredit jangka panjang, seperti investasi atau KPR.'),
           ),
-          SizedBox(width: size.width, child: Image.asset('assets/anuitas.png')),
+          Container(
+            margin: const EdgeInsets.only(bottom: 15),
+            child: const Text(
+                'Adapun cara menghitung bunga pinjaman per tahun dengan sistem efektif ialah sebagai berikut.'),
+          ),
+          SizedBox(
+              width: size.width, child: Image.asset('assets/effective.png')),
           Container(
             margin: const EdgeInsets.only(bottom: 15, top: 15),
             child: const Text(

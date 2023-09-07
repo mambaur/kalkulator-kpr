@@ -1,18 +1,18 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:kalkulator_kpr/about/other_app.dart';
+import 'package:kalkulator_kpr/pages/about/other_app.dart';
 
 enum StatusAd { initial, loaded }
 
-class EffectiveDescription extends StatefulWidget {
-  const EffectiveDescription({super.key});
+class FlatDescription extends StatefulWidget {
+  const FlatDescription({super.key});
 
   @override
-  State<EffectiveDescription> createState() => _EffectiveDescriptionState();
+  State<FlatDescription> createState() => _FlatDescriptionState();
 }
 
-class _EffectiveDescriptionState extends State<EffectiveDescription> {
+class _FlatDescriptionState extends State<FlatDescription> {
   BannerAd? myBanner;
 
   StatusAd statusAd = StatusAd.initial;
@@ -50,7 +50,7 @@ class _EffectiveDescriptionState extends State<EffectiveDescription> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Effective'),
+        title: const Text('Flat'),
         centerTitle: true,
         elevation: 0,
         foregroundColor: Colors.black,
@@ -88,24 +88,21 @@ class _EffectiveDescriptionState extends State<EffectiveDescription> {
           Container(
             margin: const EdgeInsets.only(bottom: 15),
             child: const Text(
-                'Bunga efektif merupakan kebalikan dari bunga flat. Sistem perhitungan ini membuat angsuran semakin mengecil setiap bulannya.'),
+                'Bunga flat adalah sistem perhitungan suku bunga dengan mengacu pada besaran pokok awal pinjaman. Umumnya, jenis perhitungan ini digunakan pada kredit konsumtif, seperti KTA, mobil, handphone, dan lain sebagainya.'),
           ),
           Container(
             margin: const EdgeInsets.only(bottom: 15),
             child: const Text(
-                'Hal ini disebabkan karena bunga efektif menghitung besaran bunga berdasarkan sisa pokok utang atau jumlah yang belum dibayarkan. Sehingga, pembayaran bunga pun akan terus berkurang dari waktu ke waktu. Umumnya, bunga efektif digunakan pada jenis kredit jangka panjang, seperti investasi atau KPR.'),
+                'Bunga flat juga termasuk cara menghitung bunga pinjaman di bank paling mudah dibandingkan lainnya. Sebab, besaran nilai bunga dan pokok dalam cicilan bulanan akan tetap sama dan tidak berubah.'),
           ),
           Container(
             margin: const EdgeInsets.only(bottom: 15),
             child: const Text(
-                'Adapun cara menghitung bunga pinjaman per tahun dengan sistem efektif ialah sebagai berikut.'),
+                'Adapun cara menghitung bunga pinjaman per bulan menggunakan sistem flat ialah sebagai berikut.'),
           ),
-          SizedBox(
-              width: size.width, child: Image.asset('assets/effective.png')),
-          Container(
-            margin: const EdgeInsets.only(bottom: 15, top: 15),
-            child: const Text(
-                'Hasil simulasi pada halaman utama adalah jumlah angsuran pada bulan pertama saja termasuk bunga dan pinjaman pokok.'),
+          SizedBox(width: size.width, child: Image.asset('assets/flat.png')),
+          const SizedBox(
+            height: 15,
           ),
           const OtherApp()
         ]),
