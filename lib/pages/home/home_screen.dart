@@ -8,6 +8,7 @@ import 'package:kalkulator_kpr/models/calculate_model.dart';
 import 'package:kalkulator_kpr/pages/about/anuitas_description.dart';
 import 'package:kalkulator_kpr/pages/about/effective_description.dart';
 import 'package:kalkulator_kpr/pages/about/flat_description.dart';
+import 'package:kalkulator_kpr/pages/pdf/principal_table_pdf.dart';
 import 'package:kalkulator_kpr/principal_table.dart';
 import 'package:pattern_formatter/numeric_formatter.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -166,8 +167,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 leading: const Icon(
                   Icons.play_arrow_outlined,
                 ),
-                onTap: () => _launchUrl(
-                    "https://play.google.com/store/apps/dev?id=8918426189046119136"),
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (_) {
+                    return PrincipalTablePDF();
+                  }));
+                },
+                // onTap: () => _launchUrl(
+                //     "https://play.google.com/store/apps/dev?id=8918426189046119136"),
               ),
               ListTile(
                 title: const Text('Kritik & Saran'),
