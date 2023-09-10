@@ -107,7 +107,7 @@ class _PremiumPlanScreenState extends State<PremiumPlanScreen> {
                               children: [
                                 Container(
                                   margin: const EdgeInsets.only(bottom: 5),
-                                  child: const Text('Kalkulator KPR Premium ✨',
+                                  child: const Text('Kalkulator KPR Premium',
                                       style: TextStyle(
                                         fontSize: 25,
                                         fontWeight: FontWeight.bold,
@@ -201,7 +201,9 @@ class _PremiumPlanScreenState extends State<PremiumPlanScreen> {
                                 title: Text(packages[index]
                                     .storeProduct
                                     .title
-                                    .replaceAll(" (Kalkulator KPR)", "")),
+                                    .replaceAll(
+                                        " (Kalkulator KPR Simulasi Kredit)",
+                                        "")),
                                 subtitle: Text(
                                   packages[index].storeProduct.description,
                                   style: const TextStyle(fontSize: 12),

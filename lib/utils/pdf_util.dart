@@ -214,7 +214,7 @@ class PdfUtil {
 
     final Directory? downloadsDir = await getDownloadsDirectory();
     final file = File(
-        "${downloadsDir!.path}/FilePDF_${Random().nextInt(1000000).toString()}.pdf");
+        "${downloadsDir!.path}/principal-${Random().nextInt(1000000).toString()}.pdf");
     await file.writeAsBytes(await pdf.save());
     return file;
   }

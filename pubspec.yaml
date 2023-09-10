@@ -3,7 +3,7 @@ description: Kalkulator KPR Simulasi Kredit.
 
 publish_to: 'none'
 
-version: 1.2.0+7
+version: 1.2.0+8
 
 environment:
   sdk: '>=2.18.2 <3.0.0'

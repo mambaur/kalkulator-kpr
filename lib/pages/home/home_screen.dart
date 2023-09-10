@@ -202,7 +202,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     "https://caraguna.com/privacy-policy-kalkulator-kpr-simulasi-kredit/"),
               ),
               ListTile(
-                title: const Text('Versi 1.1.0'),
+                title: const Text('Versi 1.2.0'),
                 leading: const Icon(
                   Icons.info_outline,
                 ),
