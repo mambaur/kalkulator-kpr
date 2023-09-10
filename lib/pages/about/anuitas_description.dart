@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:kalkulator_kpr/blocs/purchase_cubit/purchase_cubit.dart';
 import 'package:kalkulator_kpr/pages/about/other_app.dart';
 
 enum StatusAd { initial, loaded }
@@ -14,6 +16,7 @@ class AnuitasDescription extends StatefulWidget {
 
 class _AnuitasDescriptionState extends State<AnuitasDescription> {
   BannerAd? myBanner;
+  late PurchaseCubit _cubit;
 
   StatusAd statusAd = StatusAd.initial;
 
@@ -27,15 +30,20 @@ class _AnuitasDescriptionState extends State<AnuitasDescription> {
 
   @override
   void initState() {
-    myBanner = BannerAd(
-      adUnitId: kDebugMode
-          ? 'ca-app-pub-3940256099942544/6300978111'
-          : 'ca-app-pub-2465007971338713/9945891754',
-      size: AdSize.fullBanner,
-      request: const AdRequest(),
-      listener: listener(),
-    );
-    myBanner!.load();
+    _cubit = BlocProvider.of<PurchaseCubit>(context);
+
+    if (!kDebugMode && !_cubit.isPremium()) {
+      myBanner = BannerAd(
+        adUnitId: kDebugMode
+            ? 'ca-app-pub-3940256099942544/6300978111'
+            : 'ca-app-pub-2465007971338713/9945891754',
+        size: AdSize.fullBanner,
+        request: const AdRequest(),
+        listener: listener(),
+      );
+      myBanner!.load();
+    }
+
     super.initState();
   }
 

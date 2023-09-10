@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kalkulator_kpr/blocs/purchase_cubit/purchase_cubit.dart';
+import 'package:kalkulator_kpr/core/loading_overlay.dart';
 import 'package:kalkulator_kpr/core/purchases.dart';
 import 'package:kalkulator_kpr/pages/premiums/payment_success.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
@@ -43,6 +44,7 @@ class _PremiumPlanScreenState extends State<PremiumPlanScreen> {
       body: BlocListener<PurchaseCubit, PurchaseState>(
         listener: (context, state) {
           if (state is PurchaseData) {
+            LoadingOverlay.hide();
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
@@ -50,6 +52,7 @@ class _PremiumPlanScreenState extends State<PremiumPlanScreen> {
               ModalRoute.withName('/payment_success'),
             );
           } else if (state is PurchaseError) {
+            LoadingOverlay.hide();
             _cubit.checkPremium();
             // Fluttertoast.showToast(
             //     msg: "Oops, Something went wrong! please try again later");
@@ -71,7 +74,7 @@ class _PremiumPlanScreenState extends State<PremiumPlanScreen> {
                           width: double.infinity,
                           height: MediaQuery.of(context).size.height * 0.5,
                           child: Image.asset(
-                            'assets/images/ongkirku_image.jpg',
+                            'assets/premium_image.jpg',
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -104,7 +107,7 @@ class _PremiumPlanScreenState extends State<PremiumPlanScreen> {
                               children: [
                                 Container(
                                   margin: const EdgeInsets.only(bottom: 5),
-                                  child: const Text('Ongkirku Premium ✨',
+                                  child: const Text('Kalkulator KPR Premium ✨',
                                       style: TextStyle(
                                         fontSize: 25,
                                         fontWeight: FontWeight.bold,
@@ -198,9 +201,7 @@ class _PremiumPlanScreenState extends State<PremiumPlanScreen> {
                                 title: Text(packages[index]
                                     .storeProduct
                                     .title
-                                    .replaceAll(
-                                        " (Ongkirku - Cek Resi dan Ongkir)",
-                                        "")),
+                                    .replaceAll(" (Kalkulator KPR)", "")),
                                 subtitle: Text(
                                   packages[index].storeProduct.description,
                                   style: const TextStyle(fontSize: 12),
@@ -224,6 +225,7 @@ class _PremiumPlanScreenState extends State<PremiumPlanScreen> {
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 15, horizontal: 18)),
                               onPressed: () async {
+                                LoadingOverlay.show(context);
                                 _cubit.makePurchase(packages[_selectedIndex]);
                               },
                               child: const Text(
@@ -241,6 +243,7 @@ class _PremiumPlanScreenState extends State<PremiumPlanScreen> {
                         ),
                         TextButton(
                             onPressed: () {
+                              LoadingOverlay.show(context);
                               _cubit.restorePurchase();
                             },
                             child: const Text('Restore Purchase'))

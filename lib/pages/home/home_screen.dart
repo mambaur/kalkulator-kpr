@@ -8,8 +8,8 @@ import 'package:kalkulator_kpr/models/calculate_model.dart';
 import 'package:kalkulator_kpr/pages/about/anuitas_description.dart';
 import 'package:kalkulator_kpr/pages/about/effective_description.dart';
 import 'package:kalkulator_kpr/pages/about/flat_description.dart';
-import 'package:kalkulator_kpr/pages/pdf/principal_table_pdf.dart';
-import 'package:kalkulator_kpr/principal_table.dart';
+import 'package:kalkulator_kpr/pages/premiums/premium_plan_screen.dart';
+import 'package:kalkulator_kpr/pages/principle/principal_table.dart';
 import 'package:pattern_formatter/numeric_formatter.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -167,13 +167,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 leading: const Icon(
                   Icons.play_arrow_outlined,
                 ),
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) {
-                    return PrincipalTablePDF();
-                  }));
-                },
-                // onTap: () => _launchUrl(
-                //     "https://play.google.com/store/apps/dev?id=8918426189046119136"),
+                onTap: () => _launchUrl(
+                    "https://play.google.com/store/apps/dev?id=8918426189046119136"),
               ),
               ListTile(
                 title: const Text('Kritik & Saran'),
@@ -244,6 +239,25 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     actions: [
+                      BlocBuilder<PurchaseCubit, PurchaseState>(
+                        builder: (context, state) {
+                          if (state is PurchaseNothing) {
+                            return IconButton(
+                              onPressed: () {
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (_) {
+                                  return const PremiumPlanScreen();
+                                }));
+                              },
+                              icon: SizedBox(
+                                width: 30,
+                                child: Image.asset('assets/premium.png'),
+                              ),
+                            );
+                          }
+                          return const SizedBox();
+                        },
+                      ),
                       IconButton(
                         onPressed: () {
                           Navigator.push(context,

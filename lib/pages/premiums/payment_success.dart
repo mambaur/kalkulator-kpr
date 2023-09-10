@@ -57,7 +57,7 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
               height: 10,
             ),
             const Text(
-              'Selamat sekarang anda bisa menikmati layanan Ongkirku bebas iklan dan bisa akses semua fitur.',
+              'Selamat sekarang anda bisa menikmati layanan Kalkulator KPR bebas iklan dan bisa akses semua fitur.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
@@ -77,7 +77,7 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
                     MaterialPageRoute(
                         builder: (BuildContext context) =>
                             const MyHomePage(title: 'Kalkulator KPR')),
-                    ModalRoute.withName('/shipping'),
+                    ModalRoute.withName('/dashboard'),
                   );
                 },
                 child: const Text('Kembali ke Dashboard'))

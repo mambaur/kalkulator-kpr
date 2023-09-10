@@ -25,6 +25,9 @@ dependencies:
   pdf: ^3.10.4
   easy_pdf_viewer: ^1.0.7
   path_provider: ^2.1.1
+  share_plus: ^7.1.0
+  document_file_save_plus: ^2.0.0
+  another_flushbar: ^1.12.30
   
   cupertino_icons: ^1.0.2
 
@@ -45,3 +48,6 @@ flutter:
     - assets/flat.png
     - assets/effective.png
     - assets/anuitas.png
+    - assets/ic_launcher.png
+    - assets/premium.png
+    - assets/premium_image.jpg
