@@ -166,7 +166,9 @@ class _PrincipalTableState extends State<PrincipalTable> {
 
   @override
   void dispose() {
-    myBanner!.dispose();
+    if (myBanner != null) {
+      myBanner!.dispose();
+    }
     super.dispose();
   }
 

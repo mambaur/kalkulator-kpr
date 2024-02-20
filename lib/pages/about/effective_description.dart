@@ -49,7 +49,9 @@ class _EffectiveDescriptionState extends State<EffectiveDescription> {
 
   @override
   void dispose() {
-    myBanner!.dispose();
+    if (myBanner != null) {
+      myBanner!.dispose();
+    }
     super.dispose();
   }
 

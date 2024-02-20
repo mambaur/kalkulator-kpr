@@ -17,16 +17,18 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Kalkulator KPR',
         theme: ThemeData(
+          useMaterial3: false,
           primarySwatch: Colors.blue,
         ),
         debugShowCheckedModeBanner: false,
         home: UpgradeAlert(
+            showIgnore: false,
+            showLater: false,
+            canDismissDialog: false,
+            showReleaseNotes: false,
             upgrader: Upgrader(
-                durationUntilAlertAgain: const Duration(hours: 3),
-                showIgnore: false,
-                showLater: false,
-                canDismissDialog: false,
-                showReleaseNotes: false),
+              durationUntilAlertAgain: const Duration(hours: 3),
+            ),
             child: const MyHomePage(title: 'Kalkulator KPR')),
       ),
     );

@@ -49,7 +49,9 @@ class _AnuitasDescriptionState extends State<AnuitasDescription> {
 
   @override
   void dispose() {
-    myBanner!.dispose();
+    if (myBanner != null) {
+      myBanner!.dispose();
+    }
     super.dispose();
   }
 

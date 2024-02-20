@@ -6,11 +6,11 @@ class OtherAppItem extends StatelessWidget {
   final String imageUrl, title;
   final Function() onTap;
   const OtherAppItem({
-    Key? key,
+    super.key,
     required this.imageUrl,
     required this.title,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

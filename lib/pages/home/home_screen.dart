@@ -1,5 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kalkulator_kpr/blocs/purchase_cubit/purchase_cubit.dart';
 import 'package:kalkulator_kpr/core/currency_format.dart';
 import 'package:kalkulator_kpr/core/helpers.dart';
@@ -29,6 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final _loanController = TextEditingController();
   final _yearController = TextEditingController();
   final _interestController = TextEditingController();
+  InterstitialAd? _interstitialAd;
 
   CalculateResultModel? result;
 
@@ -76,7 +81,28 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     PurchaseCubit cubit = BlocProvider.of<PurchaseCubit>(context);
-    cubit.checkPremium();
+    cubit.checkPremium().then((value) {
+      if (!kDebugMode && !cubit.isPremium()) {
+        InterstitialAd.load(
+            adUnitId: kDebugMode
+                ? 'ca-app-pub-3940256099942544/1033173712'
+                : 'ca-app-pub-2465007971338713/3842103086',
+            request: const AdRequest(),
+            adLoadCallback: InterstitialAdLoadCallback(
+              // Called when an ad is successfully received.
+              onAdLoaded: (ad) {
+                debugPrint('$ad loaded.');
+                // Keep a reference to the ad so you can show it later.
+                _interstitialAd = ad;
+              },
+              // Called when an ad request failed.
+              onAdFailedToLoad: (LoadAdError error) {
+                debugPrint('InterstitialAd failed to load: $error');
+              },
+            ));
+      }
+    });
+
     super.initState();
   }
 
@@ -566,6 +592,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                               ),
                                             ),
                                             onPressed: () async {
+                                              if (_interstitialAd != null) {
+                                                await _interstitialAd!.show();
+                                              }
+
                                               if (_formKey.currentState!
                                                   .validate()) {
                                                 LoadingOverlay.show(context);
@@ -606,7 +636,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                                     const Duration(seconds: 1));
                                                 LoadingOverlay.hide();
 
-                                                // ignore: use_build_context_synchronously
                                                 Navigator.push(context,
                                                     MaterialPageRoute(
                                                         builder: (builder) {

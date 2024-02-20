@@ -49,7 +49,9 @@ class _FlatDescriptionState extends State<FlatDescription> {
 
   @override
   void dispose() {
-    myBanner!.dispose();
+    if (myBanner != null) {
+      myBanner!.dispose();
+    }
     super.dispose();
   }
 
