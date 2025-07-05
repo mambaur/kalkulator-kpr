@@ -13,7 +13,7 @@ import 'package:kalkulator_kpr/pages/premiums/premium_plan_screen.dart';
 import 'package:kalkulator_kpr/utils/custom_snackbar.dart';
 import 'package:kalkulator_kpr/utils/pdf_util.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:document_file_save_plus/document_file_save_plus.dart';
+// import 'package:document_file_save_plus/document_file_save_plus.dart';
 
 enum StatusAd { initial, loaded }
 
@@ -128,11 +128,11 @@ class _PrincipalTableState extends State<PrincipalTable> {
         totalInterest: getTotal("interest"),
         type: widget.type,
         calculateModel: widget.calculateModel);
-    DocumentFileSavePlus savePlus = DocumentFileSavePlus();
-    await savePlus.saveFile(
-        await filePdf.readAsBytes(),
-        "Tabel-angsuran-kalkulator-kpr-${Random().nextInt(10000)}.pdf",
-        "application/pdf");
+    // DocumentFileSavePlus savePlus = DocumentFileSavePlus();
+    // await savePlus.saveFile(
+    //     await filePdf.readAsBytes(),
+    //     "Tabel-angsuran-kalkulator-kpr-${Random().nextInt(10000)}.pdf",
+    //     "application/pdf");
     LoadingOverlay.hide();
 
     // ignore: use_build_context_synchronously
