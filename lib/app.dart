@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         home: UpgradeAlert(
             showIgnore: false,
             showLater: false,
-            canDismissDialog: false,
+            barrierDismissible: false,
             showReleaseNotes: false,
             upgrader: Upgrader(
               durationUntilAlertAgain: const Duration(hours: 3),
