@@ -27,14 +27,14 @@ class PurchaseCubit extends Cubit<PurchaseState> {
 
   Future<void> makePurchase(Package package) async {
     try {
-      CustomerInfo customerInfo = await Purchases.purchasePackage(package);
-      if (customerInfo.entitlements.all["premium"] != null &&
-          customerInfo.entitlements.all["premium"]!.isActive) {
-        _customerInfo = customerInfo;
-        emit(PurchaseData(customerInfo: customerInfo, isPremium: true));
-      } else {
-        emit(PurchaseNothing());
-      }
+      // CustomerInfo customerInfo = await Purchases.purchasePackage(package);
+      // if (customerInfo.entitlements.all["premium"] != null &&
+      //     customerInfo.entitlements.all["premium"]!.isActive) {
+      //   _customerInfo = customerInfo;
+      //   emit(PurchaseData(customerInfo: customerInfo, isPremium: true));
+      // } else {
+      //   emit(PurchaseNothing());
+      // }
     } on PlatformException catch (e) {
       var errorCode = PurchasesErrorHelper.getErrorCode(e);
       if (errorCode != PurchasesErrorCode.purchaseCancelledError) {

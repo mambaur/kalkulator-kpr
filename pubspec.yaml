@@ -20,10 +20,10 @@ dependencies:
   url_launcher: ^6.1.8
   google_mobile_ads: ^6.0.0
   cached_network_image: ^3.2.3
-  purchases_flutter: ^8.10.5
+  purchases_flutter: ^9.1.0
   flutter_bloc: ^9.1.1
   bloc: ^9.0.0
-  pdf: ^3.10.4
+  # pdf: ^3.11.3
   # easy_pdf_viewer: ^1.0.7
   path_provider: ^2.1.1
   share_plus: ^11.0.0
