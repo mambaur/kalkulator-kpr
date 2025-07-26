@@ -12,6 +12,7 @@ import 'package:kalkulator_kpr/models/calculate_model.dart';
 import 'package:kalkulator_kpr/pages/about/anuitas_description.dart';
 import 'package:kalkulator_kpr/pages/about/effective_description.dart';
 import 'package:kalkulator_kpr/pages/about/flat_description.dart';
+import 'package:kalkulator_kpr/pages/advanced/advanced_screen.dart';
 import 'package:kalkulator_kpr/pages/premiums/premium_plan_screen.dart';
 import 'package:kalkulator_kpr/pages/principle/principal_table.dart';
 import 'package:pattern_formatter/numeric_formatter.dart';
@@ -187,22 +188,29 @@ class _MyHomePageState extends State<MyHomePage> {
                   }
                 },
               ),
+              Container(
+                  margin: const EdgeInsets.only(top: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  width: double.infinity,
+                  child: FilledButton(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: Colors.purple,
+                      ),
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (builder) {
+                          return AdvancedScreen();
+                        }));
+                      },
+                      child: Text('Advanced'))),
               const Spacer(),
               ListTile(
-                title: const Text('Aplikasi Lainnya'),
+                title: const Text('Beri Rating'),
                 leading: const Icon(
-                  Icons.play_arrow_outlined,
+                  Icons.star_outline,
                 ),
                 onTap: () => _launchUrl(
-                    "https://play.google.com/store/apps/dev?id=8918426189046119136"),
-              ),
-              ListTile(
-                title: const Text('Kritik & Saran'),
-                leading: const Icon(
-                  Icons.comment_outlined,
-                ),
-                onTap: () => _launchUrl(
-                    "https://docs.google.com/forms/d/e/1FAIpQLSeHAksu3qdj64kbieifkzAbQkKKT1HWLs0EZoPkPgV7_Ljrfg/viewform?usp=sf_link"),
+                    "https://play.google.com/store/apps/details?id=com.caraguna.kalkulator.kpr&hl=en"),
               ),
               ListTile(
                 title: const Text('Reset'),
@@ -245,7 +253,9 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           SingleChildScrollView(
             child: SizedBox(
-              height: size.height,
+              height: size.height -
+                  MediaQuery.of(context).padding.top -
+                  MediaQuery.of(context).padding.bottom,
               child: Column(
                 children: [
                   AppBar(
@@ -416,8 +426,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               color: Colors.grey.withOpacity(0.3),
                               spreadRadius: 2,
                               blurRadius: 3,
-                              offset: const Offset(
-                                  0, 1), // changes position of shadow
+                              offset: const Offset(0, 1),
                             ),
                           ],
                           color: Colors.white,

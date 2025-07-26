@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kalkulator_kpr/blocs/purchase_cubit/purchase_cubit.dart';
-import 'package:kalkulator_kpr/pages/about/other_app.dart';
 
 enum StatusAd { initial, loaded }
 
@@ -60,7 +59,7 @@ class _EffectiveDescriptionState extends State<EffectiveDescription> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Effective'),
+        title: const Text('Efektif'),
         centerTitle: true,
         elevation: 0,
         foregroundColor: Colors.black,
@@ -117,7 +116,6 @@ class _EffectiveDescriptionState extends State<EffectiveDescription> {
             child: const Text(
                 'Hasil simulasi pada halaman utama adalah jumlah angsuran pada bulan pertama saja termasuk bunga dan pinjaman pokok.'),
           ),
-          const OtherApp()
         ]),
       ),
     );

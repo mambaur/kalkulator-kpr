@@ -29,6 +29,7 @@ dependencies:
   share_plus: ^11.0.0
   # document_file_save_plus: ^2.0.0
   another_flushbar: ^1.12.30
+  data_table_2: ^2.6.0
   
   cupertino_icons: ^1.0.2
 

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kalkulator_kpr/blocs/purchase_cubit/purchase_cubit.dart';
-import 'package:kalkulator_kpr/pages/about/other_app.dart';
 
 enum StatusAd { initial, loaded }
 
@@ -114,7 +113,6 @@ class _FlatDescriptionState extends State<FlatDescription> {
           const SizedBox(
             height: 15,
           ),
-          const OtherApp()
         ]),
       ),
     );

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,12 +43,14 @@ class _PrincipalTableState extends State<PrincipalTable> {
             onTap: () {},
             child: Text(
               month.toString(),
-              style: const TextStyle(fontSize: 12),
             ),
           )),
           DataCell(Text(currencyId.format(e.principal))),
           DataCell(Text(currencyId.format(e.interestResult))),
-          DataCell(Text(currencyId.format(e.installmentResult))),
+          DataCell(Text(
+            currencyId.format(e.installmentResult),
+            style: TextStyle(fontWeight: FontWeight.bold),
+          )),
           DataCell(Text(currencyId.format(
               e.principalTotalRemain! < 1 ? 0 : e.principalTotalRemain!))),
         ],
@@ -55,15 +58,12 @@ class _PrincipalTableState extends State<PrincipalTable> {
     }).toList();
   }
 
-  addFooter() {
+  void addFooter() {
     rows.add(DataRow(
       cells: <DataCell>[
-        DataCell(GestureDetector(
-          onTap: () {},
-          child: const Text(
-            "Total",
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-          ),
+        DataCell(const Text(
+          "Total",
+          style: TextStyle(fontWeight: FontWeight.bold),
         )),
         DataCell(Text(
           currencyId.format(getTotal("principal")),
@@ -177,10 +177,38 @@ class _PrincipalTableState extends State<PrincipalTable> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tabel Angsuran'),
-        centerTitle: true,
+        title: const Text(
+          'Tabel Angsuran',
+          style: TextStyle(fontSize: 16),
+        ),
+        centerTitle: false,
         elevation: 0,
         actions: [
+          IconButton(
+              onPressed: () {
+                if (!_cubit.isPremium()) {
+                  CustomSnackbar.flushbar(context,
+                      title: "Premium",
+                      message: "Upgrade premium untuk download tabel angsuran",
+                      type: SnackbarType.warning);
+                  return;
+                }
+
+                downloadPDF();
+              },
+              icon: Icon(Icons.download_outlined)),
+          IconButton(
+              onPressed: () {
+                if (!_cubit.isPremium()) {
+                  CustomSnackbar.flushbar(context,
+                      title: "Premium",
+                      message: "Upgrade premium untuk share tabel angsuran",
+                      type: SnackbarType.warning);
+                  return;
+                }
+                sharePDF();
+              },
+              icon: Icon(Icons.share_outlined)),
           BlocBuilder<PurchaseCubit, PurchaseState>(
             builder: (context, state) {
               if (state is PurchaseNothing) {
@@ -208,302 +236,198 @@ class _PrincipalTableState extends State<PrincipalTable> {
       ),
       body: Stack(
         children: [
-          CustomScrollView(
-              // controller: _scrollController,
-              physics: const AlwaysScrollableScrollPhysics(
-                  parent: BouncingScrollPhysics()),
-              slivers: [
-                SliverList(
-                    delegate: SliverChildListDelegate([
-                  Container(
+          Column(
+            children: [
+              Container(
+                width: size.width,
+                margin: const EdgeInsets.only(top: 15, left: 15, right: 15),
+                padding: const EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withValues(alpha: 0.1),
+                      spreadRadius: 5,
+                      blurRadius: 3,
+                      offset: const Offset(0, 1), // changes position of shadow
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      child: Row(
+                        children: [
+                          const Expanded(
+                            child: Text('Jenis'),
+                          ),
+                          Text(
+                            widget.type == CalculatorType.flat
+                                ? 'Flat'
+                                : widget.type == CalculatorType.effective
+                                    ? 'Efektif'
+                                    : 'Anuitas',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.purple),
+                          )
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      child: Row(
+                        children: [
+                          const Expanded(
+                            child: Text('Jumlah Pinjaman'),
+                          ),
+                          Text(
+                            "Rp. ${currencyId.format(widget.calculateModel!.loan)}",
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      child: Row(
+                        children: [
+                          const Expanded(
+                            child: Text('Jangka Waktu (Tahun)'),
+                          ),
+                          Text(
+                            currencyId.format(widget.calculateModel!.year),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      child: Row(
+                        children: [
+                          const Expanded(
+                            child: Text('Bunga'),
+                          ),
+                          Text(
+                            '${widget.calculateModel!.interest!}%',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              statusAd == StatusAd.loaded
+                  ? Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        width: size.width,
+                        margin:
+                            const EdgeInsets.only(top: 15, left: 15, right: 15),
+                        // padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          // borderRadius: BorderRadius.circular(5),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withValues(alpha: 0.1),
+                              spreadRadius: 5,
+                              blurRadius: 3,
+                              offset: const Offset(
+                                  0, 1), // changes position of shadow
+                            ),
+                          ],
+                        ),
+                        child: Container(
+                          alignment: Alignment.center,
+                          width: myBanner!.size.width.toDouble(),
+                          height: myBanner!.size.height.toDouble(),
+                          child: AdWidget(ad: myBanner!),
+                        ),
+                      ),
+                    )
+                  : const SizedBox(),
+              Expanded(
+                child: Container(
                     width: size.width,
-                    margin: const EdgeInsets.only(top: 15, left: 15, right: 15),
-                    padding: const EdgeInsets.all(15),
+                    margin: const EdgeInsets.only(
+                        top: 15, left: 15, right: 15, bottom: 15),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(5),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.1),
-                          spreadRadius: 5,
+                          color: Colors.grey.withValues(alpha: 0.2),
+                          spreadRadius: 4,
                           blurRadius: 3,
                           offset:
                               const Offset(0, 1), // changes position of shadow
                         ),
                       ],
                     ),
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          child: Row(
-                            children: [
-                              const Expanded(
-                                child: Text('Jenis'),
-                              ),
-                              Text(
-                                widget.type == CalculatorType.flat
-                                    ? 'Flat'
-                                    : widget.type == CalculatorType.effective
-                                        ? 'Efektif'
-                                        : 'Anuitas',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.purple),
-                              )
-                            ],
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(5),
+                      child: DataTable2(
+                        headingRowColor: WidgetStateColor.resolveWith(
+                          (states) {
+                            return Colors.purple;
+                          },
+                        ),
+                        minWidth: 700,
+                        headingTextStyle:
+                            const TextStyle(fontWeight: FontWeight.bold),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5)),
+                        columns: const [
+                          DataColumn2(
+                            size: ColumnSize.S,
+                            label: Text(
+                              'Bulan\nke',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          child: Row(
-                            children: [
-                              const Expanded(
-                                child: Text('Jumlah Pinjaman'),
-                              ),
-                              Text(
-                                "Rp. ${currencyId.format(widget.calculateModel!.loan)}",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              )
-                            ],
+                          DataColumn2(
+                            label: Text(
+                              'Angsuran\nPokok',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          child: Row(
-                            children: [
-                              const Expanded(
-                                child: Text('Jangka Waktu (Tahun)'),
-                              ),
-                              Text(
-                                currencyId.format(widget.calculateModel!.year),
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              )
-                            ],
+                          DataColumn2(
+                            size: ColumnSize.L,
+                            label: Text(
+                              'Bunga',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            // onSort: sortColumn,
                           ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          child: Row(
-                            children: [
-                              const Expanded(
-                                child: Text('Bunga (%)'),
-                              ),
-                              Text(
-                                widget.calculateModel!.interest!.toString(),
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              )
-                            ],
+                          DataColumn(
+                            label: Text(
+                              'Jumlah\nAngsuran',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(left: 15, right: 15, top: 10),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  foregroundColor: Colors.black),
-                              onPressed: () async {
-                                if (!_cubit.isPremium()) {
-                                  CustomSnackbar.flushbar(context,
-                                      title: "Premium",
-                                      message:
-                                          "Upgrade premium untuk download tabel angsuran",
-                                      type: SnackbarType.warning);
-                                  return;
-                                }
-
-                                await downloadPDF();
-
-                                // Navigator.push(context,
-                                //     MaterialPageRoute(builder: (_) {
-                                //   return PrincipalTablePDF(
-                                //       results: widget.results,
-                                //       type: widget.type,
-                                //       calculateModel: widget.calculateModel);
-                                // }));
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  BlocBuilder<PurchaseCubit, PurchaseState>(
-                                    builder: (context, state) {
-                                      if (state is PurchaseNothing) {
-                                        return Container(
-                                            margin:
-                                                const EdgeInsets.only(right: 5),
-                                            child: const Icon(Icons.lock,
-                                                size: 15));
-                                      }
-                                      return const SizedBox();
-                                    },
-                                  ),
-                                  const Text("Download PDF"),
-                                ],
-                              )),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  foregroundColor: Colors.black),
-                              onPressed: () {
-                                if (!_cubit.isPremium()) {
-                                  CustomSnackbar.flushbar(context,
-                                      title: "Premium",
-                                      message:
-                                          "Upgrade premium untuk share tabel angsuran",
-                                      type: SnackbarType.warning);
-                                  return;
-                                }
-                                sharePDF();
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  BlocBuilder<PurchaseCubit, PurchaseState>(
-                                    builder: (context, state) {
-                                      if (state is PurchaseNothing) {
-                                        return Container(
-                                            margin:
-                                                const EdgeInsets.only(right: 5),
-                                            child: const Icon(Icons.lock,
-                                                size: 15));
-                                      }
-                                      return const SizedBox();
-                                    },
-                                  ),
-                                  const Text("Share"),
-                                ],
-                              )),
-                        ),
-                      ],
-                    ),
-                  )
-                ])),
-                SliverList(
-                    delegate: SliverChildListDelegate([
-                  Container(
-                      width: size.width,
-                      margin: const EdgeInsets.only(
-                          top: 10, left: 15, right: 15, bottom: 15),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(5),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.2),
-                            spreadRadius: 4,
-                            blurRadius: 3,
-                            offset: const Offset(
-                                0, 1), // changes position of shadow
+                          DataColumn(
+                            label: Text(
+                              'Sisa\nPinjaman',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ),
                         ],
+                        rows: rows,
                       ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(5),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: DataTable(
-                            headingRowColor: MaterialStateColor.resolveWith(
-                              (states) {
-                                return Colors.purple;
-                              },
-                            ),
-                            headingTextStyle:
-                                const TextStyle(fontWeight: FontWeight.bold),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5)),
-                            columns: const [
-                              DataColumn(
-                                label: Text(
-                                  'Bulan\nke',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                              DataColumn(
-                                label: Text(
-                                  'Angsuran\nPokok',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                              DataColumn(
-                                label: Text(
-                                  'Bunga',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                // onSort: sortColumn,
-                              ),
-                              DataColumn(
-                                label: Text(
-                                  'Jumlah\nAngsuran',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                              DataColumn(
-                                label: Text(
-                                  'Sisa\nPinjaman',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ],
-                            rows: rows,
-                          ),
-                        ),
-                      )),
-                ])),
-                SliverList(
-                    delegate: SliverChildListDelegate([
-                  const SizedBox(
-                    height: 100,
-                  )
-                ])),
-              ]),
-          statusAd == StatusAd.loaded
-              ? Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    width: size.width,
-                    margin: const EdgeInsets.only(top: 15, left: 15, right: 15),
-                    // padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      // borderRadius: BorderRadius.circular(5),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.1),
-                          spreadRadius: 5,
-                          blurRadius: 3,
-                          offset:
-                              const Offset(0, 1), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: Container(
-                      alignment: Alignment.center,
-                      width: myBanner!.size.width.toDouble(),
-                      height: myBanner!.size.height.toDouble(),
-                      child: AdWidget(ad: myBanner!),
-                    ),
-                  ),
-                )
-              : const SizedBox()
+                    )),
+              ),
+            ],
+          ),
         ],
       ),
     );
