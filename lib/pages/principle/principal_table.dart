@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'dart:math';
 
@@ -5,6 +7,7 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_file_saver/flutter_file_saver.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kalkulator_kpr/blocs/purchase_cubit/purchase_cubit.dart';
 import 'package:kalkulator_kpr/core/currency_format.dart';
@@ -117,7 +120,11 @@ class _PrincipalTableState extends State<PrincipalTable> {
         calculateModel: widget.calculateModel);
     LoadingOverlay.hide();
 
-    Share.shareXFiles([XFile(filePdf.path)], text: 'Tabel Angsuran');
+    SharePlus.instance.share(ShareParams(
+      title: 'Tabel Angsuran',
+      text: 'Tabel Angsuran Kalkulator KPR',
+      files: [XFile(filePdf.path)],
+    ));
   }
 
   Future<void> downloadPDF() async {
@@ -128,14 +135,14 @@ class _PrincipalTableState extends State<PrincipalTable> {
         totalInterest: getTotal("interest"),
         type: widget.type,
         calculateModel: widget.calculateModel);
-    // DocumentFileSavePlus savePlus = DocumentFileSavePlus();
-    // await savePlus.saveFile(
-    //     await filePdf.readAsBytes(),
-    //     "Tabel-angsuran-kalkulator-kpr-${Random().nextInt(10000)}.pdf",
-    //     "application/pdf");
+
+    await FlutterFileSaver().writeFileAsBytes(
+      fileName: "Tabel-angsuran-kalkulator-kpr-${Random().nextInt(10000)}.pdf",
+      bytes: await filePdf.readAsBytes(),
+    );
+
     LoadingOverlay.hide();
 
-    // ignore: use_build_context_synchronously
     CustomSnackbar.flushbar(context,
         title: "Download Berhasil",
         message: "Silahkan cek folder download.",

@@ -8,7 +8,7 @@ import 'package:kalkulator_kpr/pages/premiums/payment_success.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
 class PremiumPlanScreen extends StatefulWidget {
-  const PremiumPlanScreen({Key? key}) : super(key: key);
+  const PremiumPlanScreen({super.key});
 
   @override
   State<PremiumPlanScreen> createState() => _PremiumPlanScreenState();

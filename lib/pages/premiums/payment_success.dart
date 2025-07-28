@@ -4,7 +4,7 @@ import 'package:kalkulator_kpr/blocs/purchase_cubit/purchase_cubit.dart';
 import 'package:kalkulator_kpr/pages/home/home_screen.dart';
 
 class PaymentSuccess extends StatefulWidget {
-  const PaymentSuccess({Key? key}) : super(key: key);
+  const PaymentSuccess({super.key});
 
   @override
   State<PaymentSuccess> createState() => _PaymentSuccessState();

@@ -78,7 +78,7 @@ class _FlatDescriptionState extends State<FlatDescription> {
                     // borderRadius: BorderRadius.circular(5),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
+                        color: Colors.grey.withValues(alpha: 0.1),
                         spreadRadius: 5,
                         blurRadius: 3,
                         offset:

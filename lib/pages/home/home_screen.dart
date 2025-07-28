@@ -256,6 +256,7 @@ class _MyHomePageState extends State<MyHomePage> {
               height: size.height -
                   MediaQuery.of(context).padding.top -
                   MediaQuery.of(context).padding.bottom,
+              // height: size.height,
               child: Column(
                 children: [
                   AppBar(
@@ -319,97 +320,102 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   Expanded(
                     child: Center(
-                      child: CircularPercentIndicator(
-                        radius: 120.0,
-                        lineWidth: 13.0,
-                        animation: true,
-                        percent: percentIndicator ?? 0,
-                        center: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text(
-                              "Total Angsuran",
-                              style: TextStyle(fontSize: 15.0),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "Rp ${currencyId.format(result?.installmentResult ?? 0)}",
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 25.0),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              type == CalculatorType.flat ||
-                                      type == CalculatorType.anuitas
-                                  ? "Per Bulan"
-                                  : "Bulan Pertama",
-                              style: const TextStyle(fontSize: 15.0),
-                            ),
-                          ],
-                        ),
-                        footer: Container(
-                          margin: const EdgeInsets.only(top: 30),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: CircularPercentIndicator(
+                          radius: 120.0,
+                          lineWidth: 13.0,
+                          animation: true,
+                          percent: percentIndicator ?? 0,
+                          center: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Container(
-                                width: 15,
-                                height: 15,
-                                margin: const EdgeInsets.only(right: 5),
-                                decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.purple),
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "Angsuran Pokok",
-                                    style: TextStyle(),
-                                  ),
-                                  Text(
-                                    "Rp ${currencyId.format(result?.principal ?? 0)}",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
+                              const Text(
+                                "Total Angsuran",
+                                style: TextStyle(fontSize: 15.0),
                               ),
                               const SizedBox(
-                                width: 15,
+                                height: 5,
                               ),
-                              Container(
-                                width: 15,
-                                height: 15,
-                                margin: const EdgeInsets.only(right: 5),
-                                decoration: const BoxDecoration(
-                                    shape: BoxShape.circle, color: Colors.grey),
+                              Text(
+                                "Rp ${currencyId.format(result?.installmentResult ?? 0)}",
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 25.0),
                               ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "Bunga",
-                                    style: TextStyle(),
-                                  ),
-                                  Text(
-                                    "Rp ${currencyId.format(result?.interestResult ?? 0)}",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                type == CalculatorType.flat ||
+                                        type == CalculatorType.anuitas
+                                    ? "Per Bulan"
+                                    : "Bulan Pertama",
+                                style: const TextStyle(fontSize: 15.0),
                               ),
                             ],
                           ),
+                          footer: Container(
+                            margin: const EdgeInsets.only(top: 30),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 15,
+                                  height: 15,
+                                  margin: const EdgeInsets.only(right: 5),
+                                  decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.purple),
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "Angsuran Pokok",
+                                      style: TextStyle(),
+                                    ),
+                                    Text(
+                                      "Rp ${currencyId.format(result?.principal ?? 0)}",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  width: 15,
+                                ),
+                                Container(
+                                  width: 15,
+                                  height: 15,
+                                  margin: const EdgeInsets.only(right: 5),
+                                  decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.grey),
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "Bunga",
+                                      style: TextStyle(),
+                                    ),
+                                    Text(
+                                      "Rp ${currencyId.format(result?.interestResult ?? 0)}",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          circularStrokeCap: CircularStrokeCap.round,
+                          progressColor: Colors.purple,
                         ),
-                        circularStrokeCap: CircularStrokeCap.round,
-                        progressColor: Colors.purple,
                       ),
                     ),
                   ),
@@ -418,12 +424,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Container(
                       // height: size.height * 0.4,
                       width: size.width,
-                      margin: const EdgeInsets.only(top: 10),
                       padding: const EdgeInsets.all(15),
                       decoration: BoxDecoration(
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withOpacity(0.3),
+                              color: Colors.grey.withValues(alpha: 0.3),
                               spreadRadius: 2,
                               blurRadius: 3,
                               offset: const Offset(0, 1),

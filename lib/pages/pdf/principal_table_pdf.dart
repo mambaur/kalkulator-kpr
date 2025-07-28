@@ -1,7 +1,7 @@
 import 'dart:io';
 
-// import 'package:easy_pdf_viewer/easy_pdf_viewer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:kalkulator_kpr/models/calculate_model.dart';
 import 'package:kalkulator_kpr/utils/pdf_util.dart';
 
@@ -17,7 +17,7 @@ class PrincipalTablePDF extends StatefulWidget {
 }
 
 class _PrincipalTablePDFState extends State<PrincipalTablePDF> {
-  // PDFDocument? document;
+  File? document;
 
   int getTotal(String type) {
     int data = 0;
@@ -42,13 +42,12 @@ class _PrincipalTablePDFState extends State<PrincipalTablePDF> {
         totalInterest: getTotal("interest"),
         type: widget.type,
         calculateModel: widget.calculateModel);
-    // document = await PDFDocument.fromFile(filePdf);
+    document = filePdf;
     setState(() {});
   }
 
   @override
   void initState() {
-    // initPage();
     initPDF();
     super.initState();
   }
@@ -60,11 +59,16 @@ class _PrincipalTablePDFState extends State<PrincipalTablePDF> {
         centerTitle: true,
         title: const Text('Principal Table PDF'),
       ),
-      body: Center(
-          // child: document == null
-          //     ? const Center(child: CircularProgressIndicator())
-          //     : PDFViewer(document: document!)
-          ),
+      body: document == null
+          ? const SizedBox()
+          : PDFView(
+              filePath: document?.path,
+              enableSwipe: true,
+              swipeHorizontal: true,
+              autoSpacing: false,
+              pageFling: false,
+              backgroundColor: Colors.grey,
+            ),
     );
   }
 }

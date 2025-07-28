@@ -40,10 +40,6 @@ class DateCustom {
   static String id(String date) {
     List<String> listDates = date.split("-");
     // ignore: prefer_interpolation_to_compose_strings
-    return listDates[2] +
-        " " +
-        idMonths[int.parse(listDates[1]) - 1] +
-        " " +
-        listDates[0];
+    return "${listDates[2]} ${idMonths[int.parse(listDates[1]) - 1]} ${listDates[0]}";
   }
 }

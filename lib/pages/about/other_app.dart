@@ -26,7 +26,7 @@ class OtherAppItem extends StatelessWidget {
                 // padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.07),
+                    color: Colors.black.withValues(alpha: 0.07),
                     spreadRadius: 1,
                     blurRadius: 12,
                     offset: const Offset(1, 1),
@@ -80,7 +80,7 @@ class OtherApp extends StatelessWidget {
                     'Aplikasi lainnya',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.black.withOpacity(0.8)),
+                        color: Colors.black.withValues(alpha: 0.8)),
                   ),
                 ),
               ),

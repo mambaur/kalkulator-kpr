@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 enum SnackbarType { success, warning, failure }
 
 class CustomSnackbar {
-  static flushbar(BuildContext context,
+  static void flushbar(BuildContext context,
       {String? title, String? message, SnackbarType? type}) {
     Color? color = Colors.green.shade700;
 
@@ -16,12 +16,12 @@ class CustomSnackbar {
       color = Colors.red.shade700;
     }
 
-    return Flushbar(
+    Flushbar(
       backgroundColor: Theme.of(context).cardColor,
       // boxShadows: [],
       boxShadows: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.1),
+          color: Colors.black.withValues(alpha: 0.1),
           blurRadius: 7,
           offset: const Offset(1, 3),
         )
@@ -41,6 +41,6 @@ class CustomSnackbar {
       ),
       duration: const Duration(seconds: 3),
       leftBarIndicatorColor: color,
-    )..show(context);
+    ).show(context);
   }
 }
