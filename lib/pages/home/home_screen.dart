@@ -253,10 +253,7 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           SingleChildScrollView(
             child: SizedBox(
-              height: size.height -
-                  MediaQuery.of(context).padding.top -
-                  MediaQuery.of(context).padding.bottom,
-              // height: size.height,
+              height: size.height,
               child: Column(
                 children: [
                   AppBar(
