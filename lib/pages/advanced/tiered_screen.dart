@@ -10,6 +10,22 @@ class TieredScreen extends StatefulWidget {
 }
 
 class _TieredScreenState extends State<TieredScreen> {
+  final List<TextEditingController> _controllers = [TextEditingController()];
+
+  void removeFixInterest(int index) {
+    if (_controllers.length > 1) {
+      setState(() {
+        _controllers.removeAt(index);
+      });
+    }
+  }
+
+  void addFixInterest() {
+    setState(() {
+      _controllers.add(TextEditingController());
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,14 +87,14 @@ class _TieredScreenState extends State<TieredScreen> {
                           },
                           inputFormatters: [
                             ThousandsFormatter(
-                                allowFraction: false,
+                                allowFraction: true,
                                 formatter: NumberFormat.decimalPattern('en'))
                           ],
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             // filled: true,
                             // fillColor: Colors.blue.shade100,
-                            label: const Text('DP (%)'),
+                            label: const Text('DP'),
                             enabledBorder: OutlineInputBorder(
                               borderSide:
                                   BorderSide(color: Colors.grey.shade400),
@@ -86,8 +102,10 @@ class _TieredScreenState extends State<TieredScreen> {
                             border: OutlineInputBorder(
                                 borderSide:
                                     BorderSide(color: Colors.grey.shade400)),
-                            suffixIcon:
-                                const Icon(Icons.alarm, color: Colors.black54),
+                            suffixIcon: const Icon(
+                              Icons.percent,
+                              color: Colors.black54,
+                            ),
                           ),
                         ),
                       ),
@@ -121,10 +139,6 @@ class _TieredScreenState extends State<TieredScreen> {
                             border: OutlineInputBorder(
                                 borderSide:
                                     BorderSide(color: Colors.grey.shade400)),
-                            suffixIcon: const Icon(
-                              Icons.percent,
-                              color: Colors.black54,
-                            ),
                           ),
                         ),
                       ),
@@ -174,59 +188,62 @@ class _TieredScreenState extends State<TieredScreen> {
                       ),
                       Spacer(),
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          addFixInterest();
+                        },
                         icon: Icon(Icons.add_circle_outline,
                             color: Colors.purple),
                       ),
                     ],
                   ),
                 ),
-                Container(
-                  margin: const EdgeInsets.only(bottom: 10),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text('Bunga tahun ke 1'),
-                      ),
-                      Expanded(
-                        child: TextFormField(
-                          // controller: _interestController,
-                          validator: (value) {
-                            if (value == '') {
-                              return "Bunga pinjaman tidak boleh kosong";
-                            }
-                            return null;
-                          },
-                          inputFormatters: [
-                            ThousandsFormatter(
-                                allowFraction: true,
-                                formatter: NumberFormat.decimalPattern('en'))
-                          ],
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            // filled: true,
-                            // fillColor: Colors.blue.shade100,
-                            label: const Text('Bunga Pinjaman (%)'),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.grey.shade400),
-                            ),
-                            border: OutlineInputBorder(
+                for (int i = 0; i < _controllers.length; i++)
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text('Bunga tahun ke ${i + 1}'),
+                        ),
+                        Expanded(
+                          child: TextFormField(
+                            controller: _controllers[i],
+                            validator: (value) {
+                              if (value == '') {
+                                return "Bunga pinjaman tidak boleh kosong";
+                              }
+                              return null;
+                            },
+                            inputFormatters: [
+                              ThousandsFormatter(
+                                  allowFraction: true,
+                                  formatter: NumberFormat.decimalPattern('en'))
+                            ],
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              label: const Text('Bunga (%)'),
+                              enabledBorder: OutlineInputBorder(
                                 borderSide:
-                                    BorderSide(color: Colors.grey.shade400)),
-                            suffixIcon: IconButton(
-                              onPressed: () {},
-                              icon: const Icon(
-                                Icons.do_not_disturb_on_outlined,
-                                color: Colors.purple,
+                                    BorderSide(color: Colors.grey.shade400),
+                              ),
+                              border: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade400)),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  removeFixInterest(i);
+                                },
+                                icon: Icon(
+                                  Icons.do_not_disturb_on_outlined,
+                                  color: i == 0 ? Colors.grey : Colors.purple,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
                 Container(
                   padding: const EdgeInsets.only(bottom: 12, top: 32),
                   child: Text(

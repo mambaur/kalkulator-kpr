@@ -73,7 +73,7 @@ class _FixAndFloatingScreenState extends State<FixAndFloatingScreen> {
                           },
                           inputFormatters: [
                             ThousandsFormatter(
-                                allowFraction: false,
+                                allowFraction: true,
                                 formatter: NumberFormat.decimalPattern('en'))
                           ],
                           keyboardType: TextInputType.number,

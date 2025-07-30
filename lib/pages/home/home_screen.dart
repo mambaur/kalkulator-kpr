@@ -197,6 +197,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         backgroundColor: Colors.purple,
                       ),
                       onPressed: () {
+                        _scaffoldKey.currentState?.openEndDrawer();
                         Navigator.push(context,
                             MaterialPageRoute(builder: (builder) {
                           return AdvancedScreen();
