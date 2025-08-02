@@ -1,6 +1,14 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pattern_formatter/numeric_formatter.dart';
+
+import '../../core/currency_format.dart';
+import '../../core/helpers.dart';
+import '../../core/loading_overlay.dart';
+import '../../models/calculate_model.dart';
+import '../principle/principal_table.dart';
 
 class FixAndFloatingScreen extends StatefulWidget {
   const FixAndFloatingScreen({super.key});
@@ -451,10 +459,66 @@ class _FixAndFloatingScreenState extends State<FixAndFloatingScreen> {
                 child: FilledButton(
                     style:
                         FilledButton.styleFrom(backgroundColor: Colors.purple),
-                    onPressed: () {
+                    onPressed: () async {
                       if (!_formKey.currentState!.validate()) {
                         return;
                       }
+
+                      LoadingOverlay.show(context);
+                      CalculateModel calculateModel = CalculateModel(
+                        fixInterest: fixInterestRateValue.floorToDouble(),
+                        fixYear: fixedCreditPeriod.floorToDouble(),
+                        floatingInterest: double.parse(
+                          CurrencyFormat.toNumberComma(
+                            _interestController.text,
+                          ),
+                        ),
+                        loanPlafon: double.parse(
+                            CurrencyFormat.toNumber(_loanTotalController.text)),
+                        loan: double.parse(
+                            CurrencyFormat.toNumber(_loanTotalController.text)),
+                        year: double.parse(
+                            CurrencyFormat.toNumber(_yearController.text)),
+                        interest: double.parse(
+                          CurrencyFormat.toNumberComma(
+                            _interestController.text,
+                          ),
+                        ),
+                      );
+
+                      List<CalculateResultModel> tables =
+                          installmentTableAnuitasFixFloating(calculateModel);
+
+                      await Future.delayed(const Duration(seconds: 1));
+                      LoadingOverlay.hide();
+
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (builder) {
+                        return PrincipalTable(
+                          results: tables,
+                          type: CalculatorType.anuitas,
+                          calculateModel: CalculateModel(
+                            fixInterest: fixInterestRateValue.floorToDouble(),
+                            fixYear: fixedCreditPeriod.floorToDouble(),
+                            floatingInterest: double.parse(
+                              CurrencyFormat.toNumberComma(
+                                _interestController.text,
+                              ),
+                            ),
+                            loanPlafon: double.parse(CurrencyFormat.toNumber(
+                                _loanTotalController.text)),
+                            loan: double.parse(CurrencyFormat.toNumber(
+                                _loanTotalController.text)),
+                            year: double.parse(
+                                CurrencyFormat.toNumber(_yearController.text)),
+                            interest: double.parse(
+                              CurrencyFormat.toNumberComma(
+                                _interestController.text,
+                              ),
+                            ),
+                          ),
+                        );
+                      }));
                     },
                     child: Wrap(
                       children: [

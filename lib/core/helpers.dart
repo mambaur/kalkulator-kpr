@@ -59,10 +59,7 @@ List<CalculateResultModel> installmentTableFlat(CalculateModel calculateModel) {
     CalculateResultModel result = calculateFlat(calculateModel);
     loan = loan - result.principal!;
     result.principalTotalRemain = loan;
-    // print(result.principalTotalRemain);
     data.add(result);
-
-    // calculateModel.loan = result.principalTotalRemain;
   }
   return data;
 }
@@ -77,7 +74,6 @@ List<CalculateResultModel> installmentTableEffective(
     CalculateResultModel result = calculateEffective(calculateModel);
     loan = loan - result.principal!;
     result.principalTotalRemain = loan;
-    // print(result.principalTotalRemain);
     data.add(result);
 
     calculateModel.loan = result.principalTotalRemain;
@@ -96,7 +92,44 @@ List<CalculateResultModel> installmentTableAnuitas(
     CalculateResultModel result = calculateAnuitas(calculateModel);
     loan = loan - result.principal!;
     result.principalTotalRemain = loan;
-    // print(result.interestResult);
+    data.add(result);
+
+    calculateModel.loan = result.principalTotalRemain;
+  }
+
+  return data;
+}
+
+List<CalculateResultModel> installmentTableAnuitasFixFloating(
+    CalculateModel calculateModel) {
+  List<CalculateResultModel> data = [];
+
+  double loan = calculateModel.loan!;
+  final totalMonths = calculateModel.year! * 12;
+  final fixMonths =
+      calculateModel.fixYear != null ? calculateModel.fixYear! * 12 : 0;
+  final floatingMonths = totalMonths - fixMonths;
+
+  // === Periode FIX ===
+  for (int i = 0; i < fixMonths; i++) {
+    calculateModel.interest = calculateModel.fixInterest;
+    CalculateResultModel result = calculateAnuitas(calculateModel);
+    loan = loan - result.principal!;
+    result.principalTotalRemain = loan;
+    data.add(result);
+
+    calculateModel.loan = result.principalTotalRemain;
+  }
+
+  calculateModel.loanPlafon = calculateModel.loan!;
+  calculateModel.year = calculateModel.year! - calculateModel.fixYear!;
+  calculateModel.interest = calculateModel.floatingInterest;
+
+  // === Periode FLOATING ===
+  for (int i = 0; i < floatingMonths; i++) {
+    CalculateResultModel result = calculateAnuitas(calculateModel);
+    loan = loan - result.principal!;
+    result.principalTotalRemain = loan;
     data.add(result);
 
     calculateModel.loan = result.principalTotalRemain;
