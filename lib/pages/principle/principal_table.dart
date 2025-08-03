@@ -121,6 +121,7 @@ class _PrincipalTableState extends State<PrincipalTable> {
         totalPrincipal: getTotal("principal"),
         totalInstallment: getTotal("installment"),
         totalInterest: getTotal("interest"),
+        tieredInterest: widget.tieredInterest,
         type: widget.type,
         calculateModel: widget.calculateModel);
     LoadingOverlay.hide();
@@ -138,6 +139,7 @@ class _PrincipalTableState extends State<PrincipalTable> {
         totalPrincipal: getTotal("principal"),
         totalInstallment: getTotal("installment"),
         totalInterest: getTotal("interest"),
+        tieredInterest: widget.tieredInterest,
         type: widget.type,
         calculateModel: widget.calculateModel);
 

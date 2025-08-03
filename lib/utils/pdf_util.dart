@@ -14,6 +14,7 @@ class PdfUtil {
       {int? totalPrincipal,
       int? totalInterest,
       int? totalInstallment,
+      final List<double>? tieredInterest,
       CalculatorType? type,
       CalculateModel? calculateModel}) async {
     Uint8List? logobytes;
@@ -70,17 +71,45 @@ class PdfUtil {
                         crossAxisAlignment: pw.CrossAxisAlignment.start,
                         children: [
                       pw.Text("Jenis: $typePrincipal"),
+                      if (calculateModel?.initialLoan != null)
+                        pw.Text(
+                            "Jumlah Pinjaman: Rp. ${currencyId.format(calculateModel?.initialLoan ?? 0)}"),
+                      if (calculateModel?.dpNominal != null)
+                        pw.Text(
+                            "DP: Rp. ${currencyId.format(calculateModel?.dpNominal ?? 0)}"),
                       pw.Text(
-                          "Jumlah Pinjaman: Rp. ${currencyId.format(calculateModel?.loan ?? 0)}"),
+                          "Total Pinjaman: Rp. ${currencyId.format(calculateModel?.loan ?? 0)}"),
                     ])),
                 pw.Expanded(
                     child: pw.Column(
                         crossAxisAlignment: pw.CrossAxisAlignment.start,
                         children: [
-                      pw.Text(
-                          "Jangka Waktu (Tahun): ${currencyId.format(calculateModel?.year ?? 0)}"),
-                      pw.Text(
-                          "Bunga (%): ${calculateModel?.interest?.toString()}"),
+                      // Advanced
+                      if (calculateModel?.floatingInterest != null)
+                        pw.Text(
+                            "Total Waktu Pinjaman: ${currencyId.format(calculateModel?.year ?? 0)} Tahun"),
+                      if (calculateModel?.floatingInterest != null &&
+                          (tieredInterest ?? []).isEmpty)
+                        pw.Text(
+                            "Bunga Fix : ${calculateModel?.fixInterest?.toString()}%"),
+                      if (calculateModel?.floatingInterest != null &&
+                          (tieredInterest ?? []).isEmpty)
+                        pw.Text(
+                            "Tahun Bunga Fix : ${calculateModel?.fixYear?.toInt()}%"),
+                      for (int i = 0; i < (tieredInterest ?? []).length; i++)
+                        pw.Text(
+                            "Bunga Fix Tahun ke ${i + 1} : ${tieredInterest![i]}%"),
+                      if (calculateModel?.floatingInterest != null)
+                        pw.Text(
+                            "Bunga : ${calculateModel?.floatingInterest?.toString()}%"),
+
+                      // Common
+                      if (calculateModel?.floatingInterest == null)
+                        pw.Text(
+                            "Jangka Waktu (Tahun): ${currencyId.format(calculateModel?.year ?? 0)}"),
+                      if (calculateModel?.floatingInterest == null)
+                        pw.Text(
+                            "Bunga : ${calculateModel?.interest?.toString()}%"),
                     ])),
               ]),
             ),
