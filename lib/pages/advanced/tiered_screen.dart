@@ -1,9 +1,18 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pattern_formatter/numeric_formatter.dart';
 
+import '../../core/currency_format.dart';
+import '../../core/helpers.dart';
+import '../../core/loading_overlay.dart';
+import '../../models/calculate_model.dart';
+import '../principle/principal_table.dart';
+
 class TieredScreen extends StatefulWidget {
-  const TieredScreen({super.key});
+  final CalculatorType type;
+  const TieredScreen({super.key, required this.type});
 
   @override
   State<TieredScreen> createState() => _TieredScreenState();
@@ -53,7 +62,7 @@ class _TieredScreenState extends State<TieredScreen> {
                     child: TextFormField(
                       controller: _loanController,
                       validator: (value) {
-                        if (value == '') {
+                        if (value == '' || value?.replaceAll(' ', '') == '0') {
                           return "Jumlah pinjaman tidak boleh kosong";
                         }
                         return null;
@@ -96,8 +105,6 @@ class _TieredScreenState extends State<TieredScreen> {
                       ],
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        // filled: true,
-                        // fillColor: Colors.blue.shade100,
                         label: const Text('Jumlah Pinjaman (Rp)'),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey.shade400),
@@ -164,8 +171,6 @@ class _TieredScreenState extends State<TieredScreen> {
                             },
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                              // filled: true,
-                              // fillColor: Colors.blue.shade100,
                               label: const Text('DP'),
                               enabledBorder: OutlineInputBorder(
                                 borderSide:
@@ -231,8 +236,6 @@ class _TieredScreenState extends State<TieredScreen> {
                             },
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                              // filled: true,
-                              // fillColor: Colors.blue.shade100,
                               label: const Text('DP (RP)'),
                               enabledBorder: OutlineInputBorder(
                                 borderSide:
@@ -260,8 +263,6 @@ class _TieredScreenState extends State<TieredScreen> {
                       ],
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        // filled: true,
-                        // fillColor: Colors.blue.shade100,
                         label: const Text('Total Pinjaman (Rp)'),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey.shade400),
@@ -284,7 +285,7 @@ class _TieredScreenState extends State<TieredScreen> {
                     child: TextFormField(
                       controller: _yearController,
                       validator: (value) {
-                        if (value == '') {
+                        if (value == '' || value?.replaceAll(' ', '') == '0') {
                           return "Jangka waktu tidak boleh kosong";
                         }
                         return null;
@@ -296,8 +297,6 @@ class _TieredScreenState extends State<TieredScreen> {
                       ],
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        // filled: true,
-                        // fillColor: Colors.blue.shade100,
                         label: const Text('Jangka Waktu (Tahun)'),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey.shade400),
@@ -342,7 +341,8 @@ class _TieredScreenState extends State<TieredScreen> {
                             child: TextFormField(
                               controller: _controllers[i],
                               validator: (value) {
-                                if (value == '') {
+                                if (value == '' ||
+                                    value?.replaceAll(' ', '') == '0') {
                                   return "Bunga pinjaman tidak boleh kosong";
                                 }
                                 return null;
@@ -391,7 +391,7 @@ class _TieredScreenState extends State<TieredScreen> {
                     child: TextFormField(
                       controller: _interestController,
                       validator: (value) {
-                        if (value == '') {
+                        if (value == '' || value?.replaceAll(' ', '') == '0') {
                           return "Bunga pinjaman tidak boleh kosong";
                         }
                         return null;
@@ -403,8 +403,6 @@ class _TieredScreenState extends State<TieredScreen> {
                       ],
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        // filled: true,
-                        // fillColor: Colors.blue.shade100,
                         label: const Text('Bunga Pinjaman'),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey.shade400),
@@ -430,10 +428,96 @@ class _TieredScreenState extends State<TieredScreen> {
                 child: FilledButton(
                     style:
                         FilledButton.styleFrom(backgroundColor: Colors.purple),
-                    onPressed: () {
+                    onPressed: () async {
                       if (!_formKey.currentState!.validate()) {
                         return;
                       }
+
+                      if (_controllers.length >=
+                          double.parse(
+                              CurrencyFormat.toNumber(_yearController.text))) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: Colors.purple,
+                            content: Text(
+                              'Tahun bunga fix harus lebih kecil dari jangka waktu pinjaman',
+                            ),
+                          ),
+                        );
+                        return;
+                      }
+
+                      LoadingOverlay.show(context);
+                      CalculateModel calculateModel = CalculateModel(
+                        fixYear: _controllers.length.floorToDouble(),
+                        floatingInterest: double.parse(
+                          CurrencyFormat.toNumberComma(
+                            _interestController.text,
+                          ),
+                        ),
+                        initialLoan: double.parse(
+                            CurrencyFormat.toNumber(_loanController.text)),
+                        dpNominal: double.parse(
+                            CurrencyFormat.toNumber(_dpNominalController.text)),
+                        loanPlafon: double.parse(
+                            CurrencyFormat.toNumber(_loanTotalController.text)),
+                        loan: double.parse(
+                            CurrencyFormat.toNumber(_loanTotalController.text)),
+                        year: double.parse(
+                            CurrencyFormat.toNumber(_yearController.text)),
+                        interest: double.parse(
+                          CurrencyFormat.toNumberComma(
+                            _interestController.text,
+                          ),
+                        ),
+                      );
+
+                      List<double> tieredInterest = [];
+                      for (var controller in _controllers) {
+                        double interest = double.parse(
+                          CurrencyFormat.toNumberComma(controller.text),
+                        );
+                        tieredInterest.add(interest);
+                      }
+
+                      List<CalculateResultModel> tables =
+                          installmentTableTiered(
+                              widget.type, calculateModel, tieredInterest);
+
+                      await Future.delayed(const Duration(seconds: 1));
+                      LoadingOverlay.hide();
+
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (builder) {
+                        return PrincipalTable(
+                          tieredInterest: tieredInterest,
+                          results: tables,
+                          type: widget.type,
+                          calculateModel: CalculateModel(
+                            fixYear: _controllers.length.floorToDouble(),
+                            floatingInterest: double.parse(
+                              CurrencyFormat.toNumberComma(
+                                _interestController.text,
+                              ),
+                            ),
+                            initialLoan: double.parse(
+                                CurrencyFormat.toNumber(_loanController.text)),
+                            dpNominal: double.parse(CurrencyFormat.toNumber(
+                                _dpNominalController.text)),
+                            loanPlafon: double.parse(CurrencyFormat.toNumber(
+                                _loanTotalController.text)),
+                            loan: double.parse(CurrencyFormat.toNumber(
+                                _loanTotalController.text)),
+                            year: double.parse(
+                                CurrencyFormat.toNumber(_yearController.text)),
+                            interest: double.parse(
+                              CurrencyFormat.toNumberComma(
+                                _interestController.text,
+                              ),
+                            ),
+                          ),
+                        );
+                      }));
                     },
                     child: Wrap(
                       children: [

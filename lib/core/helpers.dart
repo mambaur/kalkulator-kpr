@@ -100,8 +100,8 @@ List<CalculateResultModel> installmentTableAnuitas(
   return data;
 }
 
-List<CalculateResultModel> installmentTableAnuitasFixFloating(
-    CalculateModel calculateModel) {
+List<CalculateResultModel> installmentTableFixFloating(
+    CalculatorType type, CalculateModel calculateModel) {
   List<CalculateResultModel> data = [];
 
   double loan = calculateModel.loan!;
@@ -113,7 +113,9 @@ List<CalculateResultModel> installmentTableAnuitasFixFloating(
   // === Periode FIX ===
   for (int i = 0; i < fixMonths; i++) {
     calculateModel.interest = calculateModel.fixInterest;
-    CalculateResultModel result = calculateAnuitas(calculateModel);
+    CalculateResultModel result = type == CalculatorType.anuitas
+        ? calculateAnuitas(calculateModel)
+        : calculateEffective(calculateModel);
     loan = loan - result.principal!;
     result.principalTotalRemain = loan;
     data.add(result);
@@ -127,7 +129,56 @@ List<CalculateResultModel> installmentTableAnuitasFixFloating(
 
   // === Periode FLOATING ===
   for (int i = 0; i < floatingMonths; i++) {
-    CalculateResultModel result = calculateAnuitas(calculateModel);
+    CalculateResultModel result = type == CalculatorType.anuitas
+        ? calculateAnuitas(calculateModel)
+        : calculateEffective(calculateModel);
+    loan = loan - result.principal!;
+    result.principalTotalRemain = loan;
+    data.add(result);
+
+    calculateModel.loan = result.principalTotalRemain;
+  }
+
+  return data;
+}
+
+List<CalculateResultModel> installmentTableTiered(CalculatorType type,
+    CalculateModel calculateModel, List<double> tieredInterest) {
+  List<CalculateResultModel> data = [];
+
+  calculateModel.fixYear = tieredInterest.length.toDouble();
+
+  double loan = calculateModel.loan!;
+  final totalMonths = calculateModel.year! * 12;
+  final fixMonths =
+      calculateModel.fixYear != null ? calculateModel.fixYear! * 12 : 0;
+  final floatingMonths = totalMonths - fixMonths;
+
+  // === Periode FIX ===
+  for (var j = 0; j < tieredInterest.length; j++) {
+    for (int i = 0; i < 12; i++) {
+      calculateModel.interest = tieredInterest[j];
+      CalculateResultModel result = type == CalculatorType.anuitas
+          ? calculateAnuitas(calculateModel)
+          : calculateEffective(calculateModel);
+      loan = loan - result.principal!;
+      result.principalTotalRemain = loan;
+      data.add(result);
+
+      calculateModel.loan = result.principalTotalRemain;
+    }
+    calculateModel.loanPlafon = calculateModel.loan!;
+    calculateModel.year = calculateModel.year! - 1;
+  }
+
+  calculateModel.loanPlafon = calculateModel.loan!;
+  calculateModel.interest = calculateModel.floatingInterest;
+
+  // === Periode FLOATING ===
+  for (int i = 0; i < floatingMonths; i++) {
+    CalculateResultModel result = type == CalculatorType.anuitas
+        ? calculateAnuitas(calculateModel)
+        : calculateEffective(calculateModel);
     loan = loan - result.principal!;
     result.principalTotalRemain = loan;
     data.add(result);

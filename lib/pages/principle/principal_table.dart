@@ -17,22 +17,27 @@ import 'package:kalkulator_kpr/pages/premiums/premium_plan_screen.dart';
 import 'package:kalkulator_kpr/utils/custom_snackbar.dart';
 import 'package:kalkulator_kpr/utils/pdf_util.dart';
 import 'package:share_plus/share_plus.dart';
-// import 'package:document_file_save_plus/document_file_save_plus.dart';
 
 enum StatusAd { initial, loaded }
 
 class PrincipalTable extends StatefulWidget {
+  final List<double>? tieredInterest;
   final List<CalculateResultModel>? results;
   final CalculateModel? calculateModel;
   final CalculatorType? type;
   const PrincipalTable(
-      {super.key, this.results, this.calculateModel, this.type});
+      {super.key,
+      this.results,
+      this.calculateModel,
+      this.type,
+      this.tieredInterest});
 
   @override
   State<PrincipalTable> createState() => _PrincipalTableState();
 }
 
 class _PrincipalTableState extends State<PrincipalTable> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int month = 0;
   List<DataRow> rows = [];
   late PurchaseCubit _cubit;
@@ -183,7 +188,12 @@ class _PrincipalTableState extends State<PrincipalTable> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: const Text(
           'Tabel Angsuran',
           style: TextStyle(fontSize: 16),
@@ -241,6 +251,139 @@ class _PrincipalTableState extends State<PrincipalTable> {
         foregroundColor: Colors.black,
         backgroundColor: Colors.transparent,
       ),
+      drawer: widget.calculateModel?.floatingInterest == null
+          ? null
+          : Drawer(
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    ListTile(
+                      selectedColor: Colors.purple,
+                      title: const Text(''),
+                      subtitle: const Text(''),
+                      trailing: IconButton(
+                        icon: const Icon(
+                          Icons.close,
+                          color: Colors.purple,
+                        ),
+                        onPressed: () {
+                          _scaffoldKey.currentState?.openEndDrawer();
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            ListTile(
+                              selectedColor: Colors.purple,
+                              title: const Text('Jenis'),
+                              subtitle: Text(
+                                widget.type == CalculatorType.flat
+                                    ? 'Flat'
+                                    : widget.type == CalculatorType.effective
+                                        ? 'Efektif'
+                                        : 'Anuitas',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple),
+                              ),
+                            ),
+                            ListTile(
+                              selectedColor: Colors.purple,
+                              title: const Text('Jumlah Pinjaman'),
+                              subtitle: Text(
+                                "Rp. ${currencyId.format(widget.calculateModel!.initialLoan)}",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple),
+                              ),
+                            ),
+                            ListTile(
+                              selectedColor: Colors.purple,
+                              title: const Text('DP (Down Payment)'),
+                              subtitle: Text(
+                                "Rp. ${currencyId.format(widget.calculateModel!.dpNominal)}",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple),
+                              ),
+                            ),
+                            ListTile(
+                              selectedColor: Colors.purple,
+                              title: const Text('Total Pinjaman'),
+                              subtitle: Text(
+                                "Rp. ${currencyId.format(widget.calculateModel!.loan)}",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple),
+                              ),
+                            ),
+                            ListTile(
+                              selectedColor: Colors.purple,
+                              title: const Text('Total Waktu Pinjaman'),
+                              subtitle: Text(
+                                '${currencyId.format(widget.calculateModel!.year)} Tahun',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple),
+                              ),
+                            ),
+                            if (widget.calculateModel?.fixInterest != null)
+                              ListTile(
+                                selectedColor: Colors.purple,
+                                title: const Text('Bunga Fix'),
+                                subtitle: Text(
+                                  '${widget.calculateModel?.fixInterest ?? '0'}%',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.purple),
+                                ),
+                              ),
+                            if (widget.calculateModel?.fixYear != null &&
+                                widget.tieredInterest == null)
+                              ListTile(
+                                selectedColor: Colors.purple,
+                                title: const Text('Masa Bunga Fix'),
+                                subtitle: Text(
+                                  '${(widget.calculateModel?.fixYear ?? 0).toInt()} Tahun',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.purple),
+                                ),
+                              ),
+                            for (int i = 0;
+                                i < (widget.tieredInterest ?? []).length;
+                                i++)
+                              ListTile(
+                                selectedColor: Colors.purple,
+                                title: Text('Bunga Fix Tahun ke ${i + 1}'),
+                                subtitle: Text(
+                                  '${widget.tieredInterest![i]}%',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.purple),
+                                ),
+                              ),
+                            if (widget.calculateModel?.floatingInterest != null)
+                              ListTile(
+                                selectedColor: Colors.purple,
+                                title: const Text('Bunga Floating'),
+                                subtitle: Text(
+                                  '${widget.calculateModel?.floatingInterest ?? '0'}%',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.purple),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
       body: Stack(
         children: [
           Column(
@@ -311,20 +454,37 @@ class _PrincipalTableState extends State<PrincipalTable> {
                         ],
                       ),
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 10),
-                      child: Row(
-                        children: [
-                          const Expanded(
-                            child: Text('Bunga'),
-                          ),
-                          Text(
-                            '${widget.calculateModel!.interest!}%',
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          )
-                        ],
+                    if (widget.calculateModel?.floatingInterest == null)
+                      Container(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          children: [
+                            const Expanded(
+                              child: Text('Bunga'),
+                            ),
+                            Text(
+                              '${widget.calculateModel!.interest!}%',
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
+                    if (widget.calculateModel?.floatingInterest != null)
+                      GestureDetector(
+                        onTap: () {
+                          _scaffoldKey.currentState?.openDrawer();
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: const Text(
+                            'Selengkapnya',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.purple),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),

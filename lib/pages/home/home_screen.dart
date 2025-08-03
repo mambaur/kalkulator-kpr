@@ -200,7 +200,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         _scaffoldKey.currentState?.openEndDrawer();
                         Navigator.push(context,
                             MaterialPageRoute(builder: (builder) {
-                          return AdvancedScreen();
+                          return AdvancedScreen(
+                            type: type == CalculatorType.flat ? null : type,
+                          );
                         }));
                       },
                       child: Text('Advanced'))),

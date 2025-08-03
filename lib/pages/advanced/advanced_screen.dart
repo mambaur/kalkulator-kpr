@@ -8,7 +8,8 @@ import 'tiered_screen.dart';
 // https://www.rumah123.com/kpr/simulasi-kpr/
 
 class AdvancedScreen extends StatefulWidget {
-  const AdvancedScreen({super.key});
+  final CalculatorType? type;
+  const AdvancedScreen({super.key, this.type});
 
   @override
   State<AdvancedScreen> createState() => _AdvancedScreenState();
@@ -17,7 +18,13 @@ class AdvancedScreen extends StatefulWidget {
 typedef MenuEntry = DropdownMenuEntry<String>;
 
 class _AdvancedScreenState extends State<AdvancedScreen> {
-  CalculatorType type = CalculatorType.anuitas;
+  late CalculatorType type;
+
+  @override
+  initState() {
+    type = widget.type ?? CalculatorType.anuitas;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +59,7 @@ class _AdvancedScreenState extends State<AdvancedScreen> {
                                   fontWeight: FontWeight.bold, fontSize: 18),
                             ),
                             Text(
-                              'Kalkulator Lengkap',
+                              'Perhitungan Lengkap',
                               style: TextStyle(fontSize: 14),
                             ),
                           ],
@@ -135,10 +142,14 @@ class _AdvancedScreenState extends State<AdvancedScreen> {
                 ),
               ),
               Expanded(
-                child: const TabBarView(
+                child: TabBarView(
                   children: <Widget>[
-                    FixAndFloatingScreen(),
-                    TieredScreen(),
+                    FixAndFloatingScreen(
+                      type: type,
+                    ),
+                    TieredScreen(
+                      type: type,
+                    ),
                   ],
                 ),
               ),
@@ -155,7 +166,7 @@ class _AdvancedScreenState extends State<AdvancedScreen> {
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Perhitungan Bunga'),
+          title: const Text('Pilih Perhitungan'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
@@ -169,7 +180,12 @@ class _AdvancedScreenState extends State<AdvancedScreen> {
                   contentPadding: EdgeInsets.zero,
                   title: Text(
                     'Anuitas',
-                    style: TextStyle(fontSize: 14),
+                    style: type == CalculatorType.anuitas
+                        ? TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.purple)
+                        : TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                   ),
                   trailing: Icon(Icons.chevron_right),
                 ),
@@ -183,21 +199,12 @@ class _AdvancedScreenState extends State<AdvancedScreen> {
                   contentPadding: EdgeInsets.zero,
                   title: Text(
                     'Efektif',
-                    style: TextStyle(fontSize: 14),
-                  ),
-                  trailing: Icon(Icons.chevron_right),
-                ),
-                ListTile(
-                  onTap: () {
-                    setState(() {
-                      type = CalculatorType.flat;
-                    });
-                    Navigator.pop(context);
-                  },
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(
-                    'Flat',
-                    style: TextStyle(fontSize: 14),
+                    style: type == CalculatorType.effective
+                        ? TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.purple)
+                        : TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                   ),
                   trailing: Icon(Icons.chevron_right),
                 ),

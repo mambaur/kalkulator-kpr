@@ -1,5 +1,5 @@
 class CalculateModel {
-  double? loanPlafon, loan, year, interest;
+  double? loanPlafon, loan, year, interest, initialLoan, dpNominal;
 
   double? fixInterest;
   double? fixYear;
@@ -7,6 +7,8 @@ class CalculateModel {
 
   CalculateModel(
       {this.loan,
+      this.initialLoan,
+      this.dpNominal,
       this.loanPlafon,
       this.year,
       this.interest,

@@ -11,7 +11,8 @@ import '../../models/calculate_model.dart';
 import '../principle/principal_table.dart';
 
 class FixAndFloatingScreen extends StatefulWidget {
-  const FixAndFloatingScreen({super.key});
+  final CalculatorType type;
+  const FixAndFloatingScreen({super.key, required this.type});
 
   @override
   State<FixAndFloatingScreen> createState() => _FixAndFloatingScreenState();
@@ -25,8 +26,8 @@ class _FixAndFloatingScreenState extends State<FixAndFloatingScreen> {
   final _dpNominalController = TextEditingController();
   final _yearController = TextEditingController();
   final _interestController = TextEditingController();
-  double fixInterestRateValue = 4;
-  double fixedCreditPeriod = 10;
+  final _fixInterestController = TextEditingController();
+  double fixedCreditPeriod = 3;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +47,7 @@ class _FixAndFloatingScreenState extends State<FixAndFloatingScreen> {
                     child: TextFormField(
                       controller: _loanController,
                       validator: (value) {
-                        if (value == '') {
+                        if (value == '' || value?.replaceAll(' ', '') == '0') {
                           return "Jumlah pinjaman tidak boleh kosong";
                         }
                         return null;
@@ -89,8 +90,6 @@ class _FixAndFloatingScreenState extends State<FixAndFloatingScreen> {
                       ],
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        // filled: true,
-                        // fillColor: Colors.blue.shade100,
                         label: const Text('Jumlah Pinjaman (Rp)'),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey.shade400),
@@ -157,8 +156,6 @@ class _FixAndFloatingScreenState extends State<FixAndFloatingScreen> {
                             },
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                              // filled: true,
-                              // fillColor: Colors.blue.shade100,
                               label: const Text('DP'),
                               enabledBorder: OutlineInputBorder(
                                 borderSide:
@@ -253,8 +250,6 @@ class _FixAndFloatingScreenState extends State<FixAndFloatingScreen> {
                       ],
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        // filled: true,
-                        // fillColor: Colors.blue.shade100,
                         label: const Text('Total Pinjaman (Rp)'),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey.shade400),
@@ -277,7 +272,7 @@ class _FixAndFloatingScreenState extends State<FixAndFloatingScreen> {
                     child: TextFormField(
                       controller: _yearController,
                       validator: (value) {
-                        if (value == '') {
+                        if (value == '' || value?.replaceAll(' ', '') == '0') {
                           return "Jangka waktu tidak boleh kosong";
                         }
                         return null;
@@ -289,8 +284,6 @@ class _FixAndFloatingScreenState extends State<FixAndFloatingScreen> {
                       ],
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        // filled: true,
-                        // fillColor: Colors.blue.shade100,
                         label: const Text('Jangka Waktu (Tahun)'),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey.shade400),
@@ -312,51 +305,50 @@ class _FixAndFloatingScreenState extends State<FixAndFloatingScreen> {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: Text(
-                      'Suku Bunga Fix',
-                      style:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  StatefulBuilder(builder: (context, setState) {
-                    return Column(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    child: Row(
                       children: [
-                        SliderTheme(
-                          data: SliderTheme.of(context).copyWith(
-                            tickMarkShape: SliderTickMarkShape.noTickMark,
-                          ),
-                          child: Slider(
-                            activeColor: Colors.purple,
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            value: fixInterestRateValue,
-                            divisions: 20,
-                            min: 1,
-                            max: 20,
-                            onChanged: (double value) {
-                              setState(() {
-                                fixInterestRateValue = value;
-                              });
-                            },
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.only(bottom: 4),
+                            child: Text(
+                              'Suku Bunga Fix',
+                              style: TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
-                        Row(
-                          children: [
-                            Text(
-                              '${fixInterestRateValue.toInt()} %',
-                              style: TextStyle(fontSize: 16),
+                        Expanded(
+                          child: TextFormField(
+                            controller: _fixInterestController,
+                            validator: (value) {
+                              if (value == '' ||
+                                  value?.replaceAll(' ', '') == '0') {
+                                return "Bunga pinjaman tidak boleh kosong";
+                              }
+                              return null;
+                            },
+                            inputFormatters: [
+                              ThousandsFormatter(
+                                  allowFraction: true,
+                                  formatter: NumberFormat.decimalPattern('en'))
+                            ],
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              label: const Text('Bunga (%)'),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.grey.shade400),
+                              ),
+                              border: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade400)),
                             ),
-                            const Spacer(),
-                            Text(
-                              '20 %',
-                              style:
-                                  TextStyle(fontSize: 14, color: Colors.grey),
-                            ),
-                          ],
+                          ),
                         ),
                       ],
-                    );
-                  }),
+                    ),
+                  ),
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     child: Divider(),
@@ -420,7 +412,7 @@ class _FixAndFloatingScreenState extends State<FixAndFloatingScreen> {
                     child: TextFormField(
                       controller: _interestController,
                       validator: (value) {
-                        if (value == '') {
+                        if (value == '' || value?.replaceAll(' ', '') == '0') {
                           return "Bunga pinjaman tidak boleh kosong";
                         }
                         return null;
@@ -464,15 +456,37 @@ class _FixAndFloatingScreenState extends State<FixAndFloatingScreen> {
                         return;
                       }
 
+                      if (fixedCreditPeriod >=
+                          double.parse(
+                              CurrencyFormat.toNumber(_yearController.text))) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: Colors.purple,
+                            content: Text(
+                              'Masa kredit fix harus lebih kecil dari jangka waktu pinjaman',
+                            ),
+                          ),
+                        );
+                        return;
+                      }
+
                       LoadingOverlay.show(context);
                       CalculateModel calculateModel = CalculateModel(
-                        fixInterest: fixInterestRateValue.floorToDouble(),
+                        fixInterest: double.parse(
+                          CurrencyFormat.toNumberComma(
+                            _fixInterestController.text,
+                          ),
+                        ),
                         fixYear: fixedCreditPeriod.floorToDouble(),
                         floatingInterest: double.parse(
                           CurrencyFormat.toNumberComma(
                             _interestController.text,
                           ),
                         ),
+                        initialLoan: double.parse(
+                            CurrencyFormat.toNumber(_loanController.text)),
+                        dpNominal: double.parse(
+                            CurrencyFormat.toNumber(_dpNominalController.text)),
                         loanPlafon: double.parse(
                             CurrencyFormat.toNumber(_loanTotalController.text)),
                         loan: double.parse(
@@ -487,7 +501,8 @@ class _FixAndFloatingScreenState extends State<FixAndFloatingScreen> {
                       );
 
                       List<CalculateResultModel> tables =
-                          installmentTableAnuitasFixFloating(calculateModel);
+                          installmentTableFixFloating(
+                              widget.type, calculateModel);
 
                       await Future.delayed(const Duration(seconds: 1));
                       LoadingOverlay.hide();
@@ -496,15 +511,23 @@ class _FixAndFloatingScreenState extends State<FixAndFloatingScreen> {
                           MaterialPageRoute(builder: (builder) {
                         return PrincipalTable(
                           results: tables,
-                          type: CalculatorType.anuitas,
+                          type: widget.type,
                           calculateModel: CalculateModel(
-                            fixInterest: fixInterestRateValue.floorToDouble(),
+                            fixInterest: double.parse(
+                              CurrencyFormat.toNumberComma(
+                                _fixInterestController.text,
+                              ),
+                            ),
                             fixYear: fixedCreditPeriod.floorToDouble(),
                             floatingInterest: double.parse(
                               CurrencyFormat.toNumberComma(
                                 _interestController.text,
                               ),
                             ),
+                            initialLoan: double.parse(
+                                CurrencyFormat.toNumber(_loanController.text)),
+                            dpNominal: double.parse(CurrencyFormat.toNumber(
+                                _dpNominalController.text)),
                             loanPlafon: double.parse(CurrencyFormat.toNumber(
                                 _loanTotalController.text)),
                             loan: double.parse(CurrencyFormat.toNumber(
