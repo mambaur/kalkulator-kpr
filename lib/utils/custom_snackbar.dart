@@ -1,46 +1,64 @@
-import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 
 enum SnackbarType { success, warning, failure }
 
 class CustomSnackbar {
-  static void flushbar(BuildContext context,
-      {String? title, String? message, SnackbarType? type}) {
-    Color? color = Colors.green.shade700;
-
-    if (type == SnackbarType.warning) {
-      color = Colors.orange;
-    }
-
-    if (type == SnackbarType.failure) {
-      color = Colors.red.shade700;
-    }
-
-    Flushbar(
-      backgroundColor: Theme.of(context).cardColor,
-      // boxShadows: [],
-      boxShadows: [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.1),
-          blurRadius: 7,
-          offset: const Offset(1, 3),
-        )
-      ],
-      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-      flushbarPosition: FlushbarPosition.TOP,
-      borderRadius: BorderRadius.circular(10),
-      flushbarStyle: FlushbarStyle.FLOATING,
-      messageColor: Theme.of(context).textTheme.titleLarge?.color,
-      titleColor: Colors.black,
-      title: title,
-      message: message ?? '',
-      icon: Icon(
-        Icons.info_outline,
-        size: 28.0,
-        color: color,
+  static void show(
+    BuildContext context, {
+    required String title,
+    required String message,
+    SnackbarType? type,
+  }) {
+    final snackBar = SnackBar(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      content: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: BoxDecoration(
+          color: type == SnackbarType.success
+              ? Colors.green.shade700
+              : type == SnackbarType.warning
+                  ? Colors.orange
+                  : Colors.red.shade700,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          children: [
+            Icon(
+                type == SnackbarType.success
+                    ? Icons.check_circle_outline
+                    : type == SnackbarType.warning
+                        ? Icons.info_outline
+                        : Icons.error_outline,
+                color: Colors.white),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12)),
+                  const SizedBox(height: 4),
+                  Text(message,
+                      style:
+                          const TextStyle(color: Colors.white, fontSize: 10)),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
       duration: const Duration(seconds: 3),
-      leftBarIndicatorColor: color,
-    ).show(context);
+      margin: const EdgeInsets.symmetric(vertical: 20),
+    );
+
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(snackBar);
   }
 }

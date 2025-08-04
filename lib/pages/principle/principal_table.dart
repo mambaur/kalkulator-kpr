@@ -117,43 +117,50 @@ class _PrincipalTableState extends State<PrincipalTable> {
 
   Future<void> sharePDF() async {
     LoadingOverlay.show(context);
-    File filePdf = await PdfUtil.generatePrincipalPDF(widget.results ?? [],
-        totalPrincipal: getTotal("principal"),
-        totalInstallment: getTotal("installment"),
-        totalInterest: getTotal("interest"),
-        tieredInterest: widget.tieredInterest,
-        type: widget.type,
-        calculateModel: widget.calculateModel);
-    LoadingOverlay.hide();
+    try {
+      File filePdf = await PdfUtil.generatePrincipalPDF(widget.results ?? [],
+          totalPrincipal: getTotal("principal"),
+          totalInstallment: getTotal("installment"),
+          totalInterest: getTotal("interest"),
+          tieredInterest: widget.tieredInterest,
+          type: widget.type,
+          calculateModel: widget.calculateModel);
+      LoadingOverlay.hide();
 
-    SharePlus.instance.share(ShareParams(
-      title: 'Tabel Angsuran',
-      text: 'Tabel Angsuran Kalkulator KPR',
-      files: [XFile(filePdf.path)],
-    ));
+      SharePlus.instance.share(ShareParams(
+        title: 'Tabel Angsuran',
+        text: 'Tabel Angsuran Kalkulator KPR',
+        files: [XFile(filePdf.path)],
+      ));
+    } catch (e) {
+      LoadingOverlay.hide();
+    }
   }
 
   Future<void> downloadPDF() async {
-    LoadingOverlay.show(context);
-    File filePdf = await PdfUtil.generatePrincipalPDF(widget.results ?? [],
-        totalPrincipal: getTotal("principal"),
-        totalInstallment: getTotal("installment"),
-        totalInterest: getTotal("interest"),
-        tieredInterest: widget.tieredInterest,
-        type: widget.type,
-        calculateModel: widget.calculateModel);
+    try {
+      File filePdf = await PdfUtil.generatePrincipalPDF(widget.results ?? [],
+          totalPrincipal: getTotal("principal"),
+          totalInstallment: getTotal("installment"),
+          totalInterest: getTotal("interest"),
+          tieredInterest: widget.tieredInterest,
+          type: widget.type,
+          calculateModel: widget.calculateModel);
 
-    await FlutterFileSaver().writeFileAsBytes(
-      fileName: "Tabel-angsuran-kalkulator-kpr-${Random().nextInt(10000)}.pdf",
-      bytes: await filePdf.readAsBytes(),
-    );
+      await FlutterFileSaver().writeFileAsBytes(
+        fileName:
+            "Tabel-angsuran-kalkulator-kpr-${Random().nextInt(10000)}.pdf",
+        bytes: await filePdf.readAsBytes(),
+      );
+      LoadingOverlay.hide();
 
-    LoadingOverlay.hide();
-
-    CustomSnackbar.flushbar(context,
-        title: "Download Berhasil",
-        message: "Silahkan cek folder download.",
-        type: SnackbarType.success);
+      CustomSnackbar.show(context,
+          title: "Download Berhasil",
+          message: "Silahkan cek folder download.",
+          type: SnackbarType.success);
+    } catch (e) {
+      LoadingOverlay.hide();
+    }
   }
 
   @override
@@ -205,21 +212,13 @@ class _PrincipalTableState extends State<PrincipalTable> {
         actions: [
           IconButton(
               onPressed: () {
-                if (!_cubit.isPremium()) {
-                  CustomSnackbar.flushbar(context,
-                      title: "Premium",
-                      message: "Upgrade premium untuk download tabel angsuran",
-                      type: SnackbarType.warning);
-                  return;
-                }
-
                 downloadPDF();
               },
               icon: Icon(Icons.download_outlined)),
           IconButton(
               onPressed: () {
                 if (!_cubit.isPremium()) {
-                  CustomSnackbar.flushbar(context,
+                  CustomSnackbar.show(context,
                       title: "Premium",
                       message: "Upgrade premium untuk share tabel angsuran",
                       type: SnackbarType.warning);
