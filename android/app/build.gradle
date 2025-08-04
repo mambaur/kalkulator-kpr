@@ -81,5 +81,5 @@ flutter {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22"
     implementation 'com.google.android.material:material:1.8.0'
-    implementation 'com.android.billingclient:billing:6.0.1'
+    implementation 'com.android.billingclient:billing:8.0.0'
 }

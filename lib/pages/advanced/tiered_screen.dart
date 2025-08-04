@@ -30,11 +30,10 @@ class _TieredScreenState extends State<TieredScreen> {
   final List<TextEditingController> _controllers = [TextEditingController()];
 
   void removeFixInterest(int index) {
-    if (_controllers.length > 1) {
-      setState(() {
-        _controllers.removeAt(index);
-      });
-    }
+    if (index == 0) return;
+    setState(() {
+      _controllers.removeAt(index);
+    });
   }
 
   void addFixInterest() {

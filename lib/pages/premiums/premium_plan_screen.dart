@@ -115,9 +115,14 @@ class _PremiumPlanScreenState extends State<PremiumPlanScreen> {
                                 ),
                                 Container(
                                   margin: const EdgeInsets.only(bottom: 20),
-                                  child: const Text(
-                                      'Update to a new plan to enjoy more benefits',
-                                      style: TextStyle()),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 18.0),
+                                    child: const Text(
+                                      'Perbarui ke paket baru untuk menikmati lebih banyak manfaat',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
@@ -174,48 +179,50 @@ class _PremiumPlanScreenState extends State<PremiumPlanScreen> {
                           ),
                         ),
                         for (int index = 0; index < packages.length; index++)
-                          GestureDetector(
-                            onTap: () {
-                              if (_selectedIndex != index) {
-                                setState(() {
-                                  _selectedIndex = index;
-                                });
-                              }
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.only(bottom: 10),
-                              decoration: BoxDecoration(
-                                  border: _selectedIndex == index
-                                      ? Border.all(color: Colors.green)
-                                      : null,
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: Colors.grey.shade200),
-                              child: ListTile(
-                                leading: Icon(Icons.stars,
-                                    color: packages[index]
-                                                .storeProduct
-                                                .identifier ==
-                                            'lifetime_premium_100000'
-                                        ? Colors.purple
-                                        : Colors.amber),
-                                title: Text(packages[index]
-                                    .storeProduct
-                                    .title
-                                    .replaceAll(
-                                        " (Kalkulator KPR Simulasi Kredit)",
-                                        "")),
-                                subtitle: Text(
-                                  packages[index].storeProduct.description,
-                                  style: const TextStyle(fontSize: 12),
+                          if (!packages[index].storeProduct.identifier.contains(
+                              'lifetime_premium_100000')) // not using lifetime anymore
+                            GestureDetector(
+                              onTap: () {
+                                if (_selectedIndex != index) {
+                                  setState(() {
+                                    _selectedIndex = index;
+                                  });
+                                }
+                              },
+                              child: Container(
+                                margin: const EdgeInsets.only(bottom: 10),
+                                decoration: BoxDecoration(
+                                    border: _selectedIndex == index
+                                        ? Border.all(color: Colors.green)
+                                        : null,
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.grey.shade200),
+                                child: ListTile(
+                                  leading: Icon(Icons.stars,
+                                      color: packages[index]
+                                                  .storeProduct
+                                                  .identifier ==
+                                              'lifetime_premium_100000'
+                                          ? Colors.purple
+                                          : Colors.amber),
+                                  title: Text(packages[index]
+                                      .storeProduct
+                                      .title
+                                      .replaceAll(
+                                          " (Kalkulator KPR Simulasi Kredit)",
+                                          "")),
+                                  subtitle: Text(
+                                    packages[index].storeProduct.description,
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
+                                  trailing: Text(
+                                      packages[index].storeProduct.priceString,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      )),
                                 ),
-                                trailing: Text(
-                                    packages[index].storeProduct.priceString,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    )),
                               ),
                             ),
-                          ),
                         Container(
                           margin: const EdgeInsets.only(bottom: 15),
                           width: double.infinity,
@@ -238,7 +245,7 @@ class _PremiumPlanScreenState extends State<PremiumPlanScreen> {
                         Container(
                           margin: const EdgeInsets.only(bottom: 15),
                           child: const Text(
-                            'This purchase can only be used on Android System. Payment will be charged to your Google Play Account at confirmation of purchase.',
+                            'Pembelian ini hanya dapat digunakan di sistem Android. Pembayaran akan dibebankan ke akun Google Play Anda setelah pembelian dikonfirmasi.',
                             style: TextStyle(color: Colors.grey, fontSize: 10),
                             textAlign: TextAlign.center,
                           ),
@@ -248,7 +255,7 @@ class _PremiumPlanScreenState extends State<PremiumPlanScreen> {
                               LoadingOverlay.show(context);
                               _cubit.restorePurchase();
                             },
-                            child: const Text('Restore Purchase'))
+                            child: const Text('Kembalikan Pembelian'))
                       ],
                     ),
                   )

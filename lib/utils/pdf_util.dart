@@ -95,7 +95,7 @@ class PdfUtil {
                       if (calculateModel?.floatingInterest != null &&
                           (tieredInterest ?? []).isEmpty)
                         pw.Text(
-                            "Tahun Bunga Fix : ${calculateModel?.fixYear?.toInt()}%"),
+                            "Tahun Bunga Fix : ${calculateModel?.fixYear?.toInt()} Tahun"),
                       for (int i = 0; i < (tieredInterest ?? []).length; i++)
                         pw.Text(
                             "Bunga Fix Tahun ke ${i + 1} : ${tieredInterest![i]}%"),

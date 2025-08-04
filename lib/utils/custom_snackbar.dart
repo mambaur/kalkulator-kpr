@@ -42,11 +42,11 @@ class CustomSnackbar {
                       style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 12)),
+                          fontSize: 14)),
                   const SizedBox(height: 4),
                   Text(message,
                       style:
-                          const TextStyle(color: Colors.white, fontSize: 10)),
+                          const TextStyle(color: Colors.white, fontSize: 12)),
                 ],
               ),
             ),
