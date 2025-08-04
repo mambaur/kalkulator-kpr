@@ -212,6 +212,14 @@ class _PrincipalTableState extends State<PrincipalTable> {
         actions: [
           IconButton(
               onPressed: () {
+                if (!_cubit.isPremium()) {
+                  CustomSnackbar.show(context,
+                      title: "Premium",
+                      message: "Upgrade premium untuk download tabel angsuran",
+                      type: SnackbarType.warning);
+                  return;
+                }
+
                 downloadPDF();
               },
               icon: Icon(Icons.download_outlined)),
